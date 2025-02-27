@@ -1,4 +1,4 @@
-const maxWidth = 850;
+const maxWidth = 1300;
 const maxHeight = 768;
 
 // Detect the actual screen size
@@ -7,8 +7,6 @@ const screenHeight = Math.min(window.innerHeight, maxHeight);
 
 console.log("Screen Detected Width:", screenWidth);
 console.log("Screen Detected Height:", screenHeight);
-console.log("Window Detected Width:", window.innerWidth);
-console.log("Window Detected Height:", window.innerHeight);
 
 const config = {
     type: Phaser.AUTO,
@@ -18,78 +16,80 @@ const config = {
     backgroundColor: "#ffcc66",
     physics: {
         default: "arcade",
-        arcade: { debug: true } // Enable debug mode
+        arcade: { debug: false }
     },
     scene: { preload, create, update }
 };
 
 let game = new Phaser.Game(config);
 
-// --- Hardcoded & Responsive Sizes ---
-const trayX = config.width / 2;
+// === CONTROL VARIABLES ===
+const trayX = config.width / 1.7;
 const trayY = config.height - 400;
-const trayWidth = 650;
-const trayHeight = 400;
-const menuFoodSize = 85;
-const draggedFoodSize = 45;
-const placedFoodSize = 40;
-const maxFood = 10;
-const totalFoodImages = 709; 
-const numFoodToLoad = 100;
+const trayWidth = 500;
+const trayHeight = 330;
+const trayScale = 0.8;
+
+const menuFoodSize = 90;
+const draggedFoodSize = 35;
+const placedFoodSize = 30;
+
+const foodMenuX = 140;
+const foodMenuY = 180;
+const foodMenuSpacing = 10;
+
+const trashX = config.width / 2;
+const trashY = config.height - 80;
+const trashScale = 0.25;
+
+const buttonScale = 0.8;
+const buttonHoverScale = 1.1;
+
+const totalFoodImages = 709;
+const numFoodToLoad = 6;
 
 let foodTray = [];
 let trayZone;
-let foodSprites = [];
 let emitter;
 let randomFoodImages = [];
+let trashCan;
+let menuFoodSprites = [];
+let foodCounter = 0;
+let currentFoodIndex = 1;
 
 function preload() {
-    this.load.image("particle", "sprites/particle.png"); // Particle for food explosion
+    this.load.image("particle", "sprites/particle.png");
+    this.load.image("trashCan", "gameUtils/trash.png");
+    this.load.image("trayTexture", "gameUtils/tray.png");
+    loadNextFoodImages(this);
+}
 
-    // Generate random unique food images
-    let availableImages = Array.from({ length: totalFoodImages }, (_, i) => i + 1);
+function loadNextFoodImages(scene) {
+    randomFoodImages = [];
+
     for (let i = 0; i < numFoodToLoad; i++) {
-        let randomIndex = Math.floor(Math.random() * availableImages.length);
-        let foodId = availableImages.splice(randomIndex, 1)[0];
+        let foodId = currentFoodIndex;
         randomFoodImages.push(foodId);
-        this.load.image(`food${foodId}`, `sprites/FortressSide_Pack25_Fast_food_ (${foodId}).png`);
+        scene.load.image(`food${foodId}`, `sprites/FortressSide_Pack25_Fast_food_ (${foodId}).png`);
+
+        currentFoodIndex++;
+        if (currentFoodIndex > totalFoodImages) {
+            currentFoodIndex = 1;
+        }
     }
 }
 
 function create() {
-    // Debugging Info
-    console.log("Game canvas width:", config.width);
-    console.log("Game canvas height:", config.height);
-    console.log("Tray X:", trayX);
-    console.log("Tray Y:", trayY);
-    console.log("Tray Width:", trayWidth);
-    console.log("Tray Height:", trayHeight);
-    console.log("Loaded Food Images:", randomFoodImages);
+    let tray = this.add.image(trayX, trayY, "trayTexture").setScale(trayScale);
+    tray.displayWidth = trayWidth;
+    tray.displayHeight = trayHeight;
 
-    // Draw game area border
-    let gameDebugBorder = this.add.graphics();
-    gameDebugBorder.lineStyle(5, 0x00ff00, 1);
-    gameDebugBorder.strokeRect(0, 0, config.width, config.height);
-
-    // Draw the tray
-    let trayGraphics = this.add.graphics();
-    trayGraphics.fillStyle(0x888888, 1);
-    trayGraphics.fillRect(trayX - trayWidth / 2, trayY - trayHeight / 2, trayWidth, trayHeight);
-
-    // Tray debug border
-    let debugBorder = this.add.graphics();
-    debugBorder.lineStyle(5, 0xff0000, 1);
-    debugBorder.strokeRect(trayX - trayWidth / 2, trayY - trayHeight / 2, trayWidth, trayHeight);
-
-    // Define tray drop zone
     trayZone = this.add.zone(trayX, trayY, trayWidth, trayHeight);
     this.physics.world.enable(trayZone);
     trayZone.body.setAllowGravity(false);
     trayZone.body.moves = false;
 
-    // Particle system for food explosion
     let particles = this.add.particles("particle");
-
     emitter = particles.createEmitter({
         speed: 200,
         scale: { start: 0.5, end: 0 },
@@ -97,23 +97,38 @@ function create() {
         lifespan: 500
     });
 
-    // Populate the HTML food menu
-    let menu = document.getElementById("food-menu");
-    randomFoodImages.forEach(foodId => {
-        let img = document.createElement("img");
-        let foodPath = `sprites/FortressSide_Pack25_Fast_food_ (${foodId}).png`; // 🔥 Save correct image path
-        img.src = foodPath;
-        img.draggable = true;
-        img.dataset.foodName = `food${foodId}`;
-        img.dataset.foodPath = foodPath; // 🔥 Store path for saving
-        img.style.width = `${menuFoodSize}px`;
-        img.style.height = `${menuFoodSize}px`;
-        img.addEventListener("click", handleFoodClick);
-        img.addEventListener("touchstart", handleFoodTouch, { passive: false });
-        menu.appendChild(img);
+    trashCan = this.add.image(trashX, trashY, "trashCan")
+        .setScale(trashScale)
+        .setInteractive();
+
+    createSideMenu(this);
+
+    let nextButton = createButton(this, 50, 50, "➡ Next Food", 0xff5733, () => {
+        menuFoodSprites = menuFoodSprites.filter(food => {
+            if (!food.isDragged) {
+                food.destroy();
+                return false;
+            }
+            return true;
+        });
+
+        loadNextFoodImages(this);
+
+        this.load.once("complete", () => {
+            createSideMenu(this);
+        });
+
+        this.load.start();
     });
 
-    // Drag events
+    let doneButton = createButton(this, config.width - 250, 50, "✅ DONE", 0x28a745, () => {
+        let savedMeals = JSON.parse(localStorage.getItem("savedMeals")) || [];
+        savedMeals.push(foodTray.map(item => ({ key: item.key, id: item.id })));
+        localStorage.setItem("savedMeals", JSON.stringify(savedMeals));
+
+        window.location.href = "saved.html";
+    });
+
     this.input.on("dragstart", (pointer, gameObject) => {
         gameObject.setScale(draggedFoodSize / 100);
     });
@@ -124,77 +139,87 @@ function create() {
     });
 
     this.input.on("dragend", (pointer, gameObject) => {
-        // Check if dropped on tray
         if (Phaser.Geom.Intersects.RectangleToRectangle(gameObject.getBounds(), trayZone.getBounds())) {
             gameObject.setScale(placedFoodSize / 100);
-            foodTray.push({ key: gameObject.texture.key, x: gameObject.x, y: gameObject.y, path: gameObject.texture.key.replace("food", "sprites/FortressSide_Pack25_Fast_food_ (") + ").png" }); // 🔥 Save correct path
-        } else {
+
+            if (!gameObject.isDragged) {
+                gameObject.isDragged = true;
+                gameObject.draggedFoodID = foodCounter++; // Unique ID for dragged food
+                foodTray.push({ sprite: gameObject, key: gameObject.texture.key, id: gameObject.draggedFoodID });
+            }
+        } 
+        else if (Phaser.Geom.Intersects.RectangleToRectangle(gameObject.getBounds(), trashCan.getBounds())) {
             emitter.explode(10, gameObject.x, gameObject.y);
             gameObject.destroy();
+
+            foodTray = foodTray.filter(item => item.sprite !== gameObject);
+        } 
+        else {
+            gameObject.x = gameObject.originalX;
+            gameObject.y = gameObject.originalY;
+            gameObject.setScale(menuFoodSize / 100);
         }
     });
+}
 
-    // DONE button with animation
-    let doneButton = this.add.text(config.width - 250, 50, "DONE", {
-        fontSize: "50px",
+function createButton(scene, x, y, text, color, callback) {
+    let button = scene.add.text(x, y, text, {
+        fontSize: "30px",
         fill: "#fff",
-        backgroundColor: "#ff5733",
-        padding: { x: 10, y: 10 },
-        fontStyle: "bold"
+        backgroundColor: Phaser.Display.Color.GetColor(color >> 16, (color >> 8) & 255, color & 255),
+        padding: { x: 15, y: 10 },
+        fontStyle: "bold",
+        borderRadius: 8
     })
     .setInteractive()
-    .setStroke("#ff0000", 8)
-    .setShadow(2, 2, "#000", 5)
-    .setScale(1);
+    .setStroke("#000", 4)
+    .setShadow(3, 3, "#444", 5)
+    .setScale(buttonScale);
 
-    // Button hover effects
-    doneButton.on("pointerover", () => {
-        doneButton.setScale(1.4);
+    button.on("pointerover", () => {
+        scene.tweens.add({
+            targets: button,
+            scaleX: buttonHoverScale,
+            scaleY: buttonHoverScale,
+            duration: 150,
+            ease: "Power1"
+        });
     });
 
-    doneButton.on("pointerout", () => {
-        doneButton.setScale(1);
+    button.on("pointerout", () => {
+        scene.tweens.add({
+            targets: button,
+            scaleX: buttonScale,
+            scaleY: buttonScale,
+            duration: 150,
+            ease: "Power1"
+        });
     });
 
-    // Save meal & switch to saved.html
-    doneButton.on("pointerdown", () => {
-        let savedMeals = JSON.parse(localStorage.getItem("savedMeals")) || [];
-        savedMeals.push(foodTray);
-        localStorage.setItem("savedMeals", JSON.stringify(savedMeals));
+    button.on("pointerdown", callback);
 
-        window.location.href = "saved.html";
-    });
+    return button;
 }
 
-// Handle food click from HTML menu
-function handleFoodClick(event) {
-    let foodKey = event.target.dataset.foodName;
-    let foodPath = event.target.dataset.foodPath; // 🔥 Get correct image path
-    let scene = game.scene.scenes[0];
-
-    console.log("Food Spawned:", foodPath);
-
-    let foodSprite = scene.add.image(config.width / 2, config.height / 2 - 100, foodKey)
-        .setScale(placedFoodSize / 100)
+function createSideMenu(scene) {
+    randomFoodImages.forEach((foodId, index) => {
+        let foodSprite = scene.add.image(
+            foodMenuX, 
+            foodMenuY + (menuFoodSize + foodMenuSpacing) * index, 
+            `food${foodId}`
+        )
+        .setScale(menuFoodSize / 500)
         .setInteractive();
 
-    foodSprite.setData("foodPath", foodPath); // 🔥 Store path for saving
-    scene.input.setDraggable(foodSprite);
-}
+        foodSprite.menuFoodID = ++foodCounter; // Assign unique ID
+        foodSprite.isDragged = false;
 
-// Handle touch support for mobile
-function handleFoodTouch(event) {
-    event.preventDefault();
-    let foodKey = event.target.dataset.foodName;
-    let foodPath = event.target.dataset.foodPath; // 🔥 Get correct image path
-    let scene = game.scene.scenes[0];
+        foodSprite.originalX = foodSprite.x;
+        foodSprite.originalY = foodSprite.y;
 
-    let foodSprite = scene.add.image(config.width / 2, config.height / 2 - 100, foodKey)
-        .setScale(placedFoodSize / 100)
-        .setInteractive();
-
-    foodSprite.setData("foodPath", foodPath); // 🔥 Store path for saving
-    scene.input.setDraggable(foodSprite);
+        scene.input.setDraggable(foodSprite);
+        menuFoodSprites.push(foodSprite);
+    });
 }
 
 function update() {}
