@@ -44,6 +44,27 @@ let emitter;
 let randomFoodImages = [];
 
 function preload() {
+    // Add loading text and progress bar
+    let loadingText = this.add.text(config.width / 2, config.height / 2 - 50, 'Loading...', { fontSize: '32px', fill: '#ffffff' }).setOrigin(0.5);
+    let progressBar = this.add.graphics();
+    let progressBox = this.add.graphics();
+    progressBox.fillStyle(0x222222, 0.8);
+    progressBox.fillRect(config.width / 2 - 160, config.height / 2, 320, 50);
+
+    // Update progress bar as files load
+    this.load.on('progress', function (value) {
+        progressBar.clear();
+        progressBar.fillStyle(0xffffff, 1);
+        progressBar.fillRect(config.width / 2 - 150, config.height / 2 + 10, 300 * value, 30);
+    });
+
+    // Remove loading text and progress bar when loading is complete
+    this.load.on('complete', function () {
+        progressBar.destroy();
+        progressBox.destroy();
+        loadingText.destroy();
+    });
+
     this.load.image("particle", "sprites/particle.png"); // Particle for food explosion
 
     // Generate random unique food images
