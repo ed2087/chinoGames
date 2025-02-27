@@ -30,7 +30,7 @@ const trayWidth = 500;
 const trayHeight = 330;
 const trayScale = 0.8;
 
-const menuFoodSize = 90;
+const menuFoodSize = 60;
 const draggedFoodSize = 35;
 const placedFoodSize = 30;
 
