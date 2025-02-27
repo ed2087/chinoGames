@@ -1,5 +1,5 @@
-const maxWidth = 1180;
-const maxHeight = 1024;
+const maxWidth = 850;
+const maxHeight = 768;
 
 // Detect the actual screen size
 const screenWidth = Math.min(window.innerWidth, maxWidth);
@@ -27,12 +27,12 @@ let game = new Phaser.Game(config);
 
 // --- Hardcoded & Responsive Sizes ---
 const trayX = config.width / 2;
-const trayY = config.height - 500;
-const trayWidth = 850;
-const trayHeight = 500;
+const trayY = config.height - 400;
+const trayWidth = 650;
+const trayHeight = 400;
 const menuFoodSize = 85;
-const draggedFoodSize = 50;
-const placedFoodSize = 45;
+const draggedFoodSize = 45;
+const placedFoodSize = 40;
 const maxFood = 10;
 const totalFoodImages = 709; 
 const numFoodToLoad = 100;
@@ -44,27 +44,6 @@ let emitter;
 let randomFoodImages = [];
 
 function preload() {
-    // Add loading text and progress bar
-    let loadingText = this.add.text(config.width / 2, config.height / 2 - 50, 'Loading...', { fontSize: '32px', fill: '#ffffff' }).setOrigin(0.5);
-    let progressBar = this.add.graphics();
-    let progressBox = this.add.graphics();
-    progressBox.fillStyle(0x222222, 0.8);
-    progressBox.fillRect(config.width / 2 - 160, config.height / 2, 320, 50);
-
-    // Update progress bar as files load
-    this.load.on('progress', function (value) {
-        progressBar.clear();
-        progressBar.fillStyle(0xffffff, 1);
-        progressBar.fillRect(config.width / 2 - 150, config.height / 2 + 10, 300 * value, 30);
-    });
-
-    // Remove loading text and progress bar when loading is complete
-    this.load.on('complete', function () {
-        progressBar.destroy();
-        progressBox.destroy();
-        loadingText.destroy();
-    });
-
     this.load.image("particle", "sprites/particle.png"); // Particle for food explosion
 
     // Generate random unique food images
@@ -156,17 +135,17 @@ function create() {
     });
 
     // DONE button with animation
-    let doneButton = this.add.text(config.width - 200, 50, "DONE", {
+    let doneButton = this.add.text(config.width - 250, 50, "DONE", {
         fontSize: "50px",
         fill: "#fff",
         backgroundColor: "#ff5733",
-        padding: { x: 20, y: 10 },
+        padding: { x: 10, y: 10 },
         fontStyle: "bold"
     })
     .setInteractive()
     .setStroke("#ff0000", 8)
     .setShadow(2, 2, "#000", 5)
-    .setScale(1.2);
+    .setScale(1);
 
     // Button hover effects
     doneButton.on("pointerover", () => {
@@ -174,7 +153,7 @@ function create() {
     });
 
     doneButton.on("pointerout", () => {
-        doneButton.setScale(1.2);
+        doneButton.setScale(1);
     });
 
     // Save meal & switch to saved.html
