@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Creation Game - Start</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #ffcc66; }
+    </style>
+</head>
+<body>
+
+<script>
+const config = {
+    type: Phaser.AUTO,
+    width: window.innerWidth,
+    height: window.innerHeight,
+    backgroundColor: "#ffcc66",
+    scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH
+    },
+    scene: {
+        preload: preload,
+        create: create,
+        update: update
+    }
+};
+
+let game = new Phaser.Game(config);
+let foodImages = [];
+let foodButton;
+let foodIndex = 0;
+
+function preload() {
+    for (let i = 1; i <= 709; i++) {
+        this.load.image(`food${i}`, `sprites/FortressSide_Pack25_Fast_food_ (${i}).png`);
+        foodImages.push(`food${i}`);
+    }
+}
+
+function create() {
+    foodButton = this.add.image(config.width / 2, config.height / 2, foodImages[foodIndex])
+        .setInteractive()
+        .setScale(0.4);
+
+    // Make the button cycle through food images every second
+    this.time.addEvent({
+        delay: 1000,
+        loop: true,
+        callback: () => {
+            foodIndex = (foodIndex + 1) % foodImages.length;
+            foodButton.setTexture(foodImages[foodIndex]);
+        }
+    });
+
+    // Make the button scale up when hovered
+    foodButton.on('pointerover', () => {
+        foodButton.setScale(0.6);
+    });
+
+    foodButton.on('pointerout', () => {
+        foodButton.setScale(0.4);
+    });
+
+    // Click to go to game.html
+    foodButton.on('pointerdown', () => {
+        window.location.href = "game.html";
+    });
+}
+
+function update() {}
+
+</script>
+
+</body>
+</html>

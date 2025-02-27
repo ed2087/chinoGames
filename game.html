@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Creation Game</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    <script src="game.js" defer></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #ffcc66;
+            display: flex;
+        }
+        #food-menu {
+            width: 150px;
+            height: 100vh;
+            background: white;
+            overflow-y: auto; /* 🔥 Now it's scrollable */
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-right: 2px solid #333;
+        }
+        #food-menu img {
+            width: 80px;
+            height: 80px;
+            margin: 5px;
+            cursor: grab;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="food-menu"></div>
+    <div id="game-container"></div>
+
+</body>
+</html>
