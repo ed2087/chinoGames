@@ -1,225 +1,208 @@
-const maxWidth = 1300;
-const maxHeight = 768;
+// Matter.js Aliases
+const { Engine, Render, World, Bodies, Runner, Mouse, MouseConstraint, Constraint } = Matter;
 
-// Detect the actual screen size
-const screenWidth = Math.min(window.innerWidth, maxWidth);
-const screenHeight = Math.min(window.innerHeight, maxHeight);
-
-console.log("Screen Detected Width:", screenWidth);
-console.log("Screen Detected Height:", screenHeight);
-
-const config = {
-    type: Phaser.AUTO,
-    parent: "game-container",
-    width: screenWidth,
-    height: screenHeight,
-    backgroundColor: "#ffcc66",
-    physics: {
-        default: "arcade",
-        arcade: { debug: false }
-    },
-    scene: { preload, create, update }
+// 🔹 Global SETTINGS (Auto-Adjusted)
+const SETTINGS = {
+    gravity: 1,
+    numShapes: 10, // Will be adjusted dynamically
+    shapeMinSize: 20,
+    shapeMaxSize: 80,
+    numChains: 2, // Will be adjusted dynamically
+    chainLinks: 7,
+    chainSpacing: 700,
+    nextButtonDelay: 5000,
+    airResistance: 0.01,
+    angularDamping: 0.1,
+    lightSource: { x: 400, y: 100 }
 };
 
-let game = new Phaser.Game(config);
+// Create Physics Engine
+const engine = Engine.create();
+const world = engine.world;
+world.gravity.y = SETTINGS.gravity;
 
-// === CONTROL VARIABLES ===
-const trayX = config.width / 1.7;
-const trayY = config.height - 400;
-const trayWidth = 500;
-const trayHeight = 330;
-const trayScale = 0.8;
+// Canvas Setup
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
 
-const menuFoodSize = 60;
-const draggedFoodSize = 35;
-const placedFoodSize = 30;
+// 🔹 Resize Canvas for Any Device
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
 
-const foodMenuX = 140;
-const foodMenuY = 180;
-const foodMenuSpacing = 10;
+// Matter.js Renderer
+const render = Render.create({
+    canvas: canvas,
+    engine: engine,
+    options: {
+        width: canvas.width,
+        height: canvas.height,
+        wireframes: false,
+        background: "black"
+    }
+});
+Render.run(render);
 
-const trashX = config.width / 2;
-const trashY = config.height - 80;
-const trashScale = 0.25;
+// Run Matter.js Engine
+const runner = Runner.create();
+Runner.run(runner, engine);
 
-const buttonScale = 0.8;
-const buttonHoverScale = 1.1;
+// 🔹 FPS Counter
+let fps = 0;
+let lastFrameTime = performance.now();
+const fpsDisplay = document.createElement("div");
+fpsDisplay.style.position = "absolute";
+fpsDisplay.style.top = "10px";
+fpsDisplay.style.left = "10px";
+fpsDisplay.style.color = "white";
+fpsDisplay.style.fontSize = "16px";
+fpsDisplay.innerText = "FPS: --";
+document.body.appendChild(fpsDisplay);
 
-const totalFoodImages = 709;
-const numFoodToLoad = 6;
+function updateFPS() {
+    let now = performance.now();
+    fps = Math.round(1000 / (now - lastFrameTime));
+    lastFrameTime = now;
+    fpsDisplay.innerText = `FPS: ${fps}`;
+}
+setInterval(updateFPS, 1000);
 
-let foodTray = [];
-let trayZone;
-let emitter;
-let randomFoodImages = [];
-let trashCan;
-let menuFoodSprites = [];
-let foodCounter = 0;
-let currentFoodIndex = 1;
+// 🔹 Adaptive Object Scaling Based on Device Size
+function adjustSettings() {
+    let width = window.innerWidth;
 
-function preload() {
-    this.load.image("particle", "sprites/particle.png");
-    this.load.image("trashCan", "gameUtils/trash.png");
-    this.load.image("trayTexture", "gameUtils/tray.png");
-    loadNextFoodImages(this);
+    if (width < 800) {
+        SETTINGS.numShapes = 8;
+        SETTINGS.numChains = 1;
+        SETTINGS.chainLinks = 5;
+    } else if (width < 1200) {
+        SETTINGS.numShapes = 10;
+        SETTINGS.numChains = 2;
+        SETTINGS.chainLinks = 4;
+    } else {
+        SETTINGS.numShapes = 30;
+        SETTINGS.numChains = 5;
+        SETTINGS.chainLinks = 8;
+    }
+}
+adjustSettings();
+window.addEventListener("resize", adjustSettings);
+
+// 🔹 Create Boundaries (Keep Everything Inside the Screen)
+function createBoundaries() {
+    let ground = Bodies.rectangle(canvas.width / 2, canvas.height, canvas.width, 50, { isStatic: true });
+    let leftWall = Bodies.rectangle(0, canvas.height / 2, 50, canvas.height, { isStatic: true });
+    let rightWall = Bodies.rectangle(canvas.width, canvas.height / 2, 50, canvas.height, { isStatic: true });
+    let ceiling = Bodies.rectangle(canvas.width / 2, 0, canvas.width, 50, { isStatic: true });
+
+    World.add(world, [ground, leftWall, rightWall, ceiling]);
 }
 
-function loadNextFoodImages(scene) {
-    randomFoodImages = [];
+// 🔹 Spawn Random Shapes
+function spawnShapes() {
+    let colors = ["#FF6B6B", "#4ECDC4", "#FFE66D", "#FFAFCC", "#A2D2FF", "#BDB2FF"];
 
-    for (let i = 0; i < numFoodToLoad; i++) {
-        let foodId = currentFoodIndex;
-        randomFoodImages.push(foodId);
-        scene.load.image(`food${foodId}`, `sprites/FortressSide_Pack25_Fast_food_ (${foodId}).png`);
+    for (let i = 0; i < SETTINGS.numShapes; i++) {
+        let size = Math.random() * (SETTINGS.shapeMaxSize - SETTINGS.shapeMinSize) + SETTINGS.shapeMinSize;
+        let color = colors[Math.floor(Math.random() * colors.length)];
+        let shapeType = Math.random() > 0.5 ? "circle" : "rectangle";
 
-        currentFoodIndex++;
-        if (currentFoodIndex > totalFoodImages) {
-            currentFoodIndex = 1;
+        let shape;
+        if (shapeType === "circle") {
+            shape = Bodies.circle(Math.random() * canvas.width, Math.random() * canvas.height / 2, size / 2, {
+                restitution: 0.8,
+                friction: 0.5,
+                render: { fillStyle: color },
+                airResistance: SETTINGS.airResistance,
+                angularDamping: SETTINGS.angularDamping
+            });
+        } else {
+            shape = Bodies.rectangle(Math.random() * canvas.width, Math.random() * canvas.height / 2, size, size, {
+                restitution: 0.8,
+                friction: 0.5,
+                render: { fillStyle: color },
+                airResistance: SETTINGS.airResistance,
+                angularDamping: SETTINGS.angularDamping
+            });
         }
+
+        World.add(world, shape);
     }
 }
 
-function create() {
-    let tray = this.add.image(trayX, trayY, "trayTexture").setScale(trayScale);
-    tray.displayWidth = trayWidth;
-    tray.displayHeight = trayHeight;
+// 🔹 Spawn Chains
+function spawnChains() {
+    let colors = ["#FFFFFF", "#A2D2FF", "#FFAFCC"];
+    let startX = (canvas.width - (SETTINGS.numChains - 1) * SETTINGS.chainSpacing) / 2;
 
-    trayZone = this.add.zone(trayX, trayY, trayWidth, trayHeight);
-    this.physics.world.enable(trayZone);
-    trayZone.body.setAllowGravity(false);
-    trayZone.body.moves = false;
+    for (let i = 0; i < SETTINGS.numChains; i++) {
+        let base = Bodies.circle(startX + i * SETTINGS.chainSpacing, 50, 10, { isStatic: true });
+        let lastBody = base;
 
-    let particles = this.add.particles("particle");
-    emitter = particles.createEmitter({
-        speed: 200,
-        scale: { start: 0.5, end: 0 },
-        blendMode: "ADD",
-        lifespan: 500
-    });
+        for (let j = 0; j < SETTINGS.chainLinks; j++) {
+            let size = 30;
+            let body = Bodies.circle(lastBody.position.x, lastBody.position.y + size, size / 2, {
+                restitution: 0.6,
+                friction: 0.5,
+                render: { fillStyle: colors[Math.floor(Math.random() * colors.length)] },
+                airResistance: SETTINGS.airResistance,
+                angularDamping: SETTINGS.angularDamping
+            });
 
-    trashCan = this.add.image(trashX, trashY, "trashCan")
-        .setScale(trashScale)
-        .setInteractive();
+            let constraint = Constraint.create({
+                bodyA: lastBody,
+                bodyB: body,
+                length: size,
+                stiffness: 0.5
+            });
 
-    createSideMenu(this);
-
-    let nextButton = createButton(this, 50, 50, "➡ Next Food", 0xff5733, () => {
-        menuFoodSprites = menuFoodSprites.filter(food => {
-            if (!food.isDragged) {
-                food.destroy();
-                return false;
-            }
-            return true;
-        });
-
-        loadNextFoodImages(this);
-
-        this.load.once("complete", () => {
-            createSideMenu(this);
-        });
-
-        this.load.start();
-    });
-
-    let doneButton = createButton(this, config.width - 250, 50, "✅ DONE", 0x28a745, () => {
-        let savedMeals = JSON.parse(localStorage.getItem("savedMeals")) || [];
-        savedMeals.push(foodTray.map(item => ({ key: item.key, id: item.id })));
-        localStorage.setItem("savedMeals", JSON.stringify(savedMeals));
-
-        window.location.href = "saved.html";
-    });
-
-    this.input.on("dragstart", (pointer, gameObject) => {
-        gameObject.setScale(draggedFoodSize / 100);
-    });
-
-    this.input.on("drag", (pointer, gameObject, dragX, dragY) => {
-        gameObject.x = dragX;
-        gameObject.y = dragY;
-    });
-
-    this.input.on("dragend", (pointer, gameObject) => {
-        if (Phaser.Geom.Intersects.RectangleToRectangle(gameObject.getBounds(), trayZone.getBounds())) {
-            gameObject.setScale(placedFoodSize / 100);
-
-            if (!gameObject.isDragged) {
-                gameObject.isDragged = true;
-                gameObject.draggedFoodID = foodCounter++; // Unique ID for dragged food
-                foodTray.push({ sprite: gameObject, key: gameObject.texture.key, id: gameObject.draggedFoodID });
-            }
-        } 
-        else if (Phaser.Geom.Intersects.RectangleToRectangle(gameObject.getBounds(), trashCan.getBounds())) {
-            emitter.explode(10, gameObject.x, gameObject.y);
-            gameObject.destroy();
-
-            foodTray = foodTray.filter(item => item.sprite !== gameObject);
-        } 
-        else {
-            gameObject.x = gameObject.originalX;
-            gameObject.y = gameObject.originalY;
-            gameObject.setScale(menuFoodSize / 100);
+            World.add(world, [body, constraint]);
+            lastBody = body;
         }
-    });
+
+        World.add(world, base);
+    }
 }
 
-function createButton(scene, x, y, text, color, callback) {
-    let button = scene.add.text(x, y, text, {
-        fontSize: "30px",
-        fill: "#fff",
-        backgroundColor: Phaser.Display.Color.GetColor(color >> 16, (color >> 8) & 255, color & 255),
-        padding: { x: 15, y: 10 },
-        fontStyle: "bold",
-        borderRadius: 8
-    })
-    .setInteractive()
-    .setStroke("#000", 4)
-    .setShadow(3, 3, "#444", 5)
-    .setScale(buttonScale);
-
-    button.on("pointerover", () => {
-        scene.tweens.add({
-            targets: button,
-            scaleX: buttonHoverScale,
-            scaleY: buttonHoverScale,
-            duration: 150,
-            ease: "Power1"
-        });
+// 🔹 Allow User to Drag Shapes
+function enableDragging() {
+    let mouse = Mouse.create(render.canvas);
+    let mouseConstraint = MouseConstraint.create(engine, {
+        mouse: mouse,
+        constraint: { stiffness: 0.2, render: { visible: false } }
     });
 
-    button.on("pointerout", () => {
-        scene.tweens.add({
-            targets: button,
-            scaleX: buttonScale,
-            scaleY: buttonScale,
-            duration: 150,
-            ease: "Power1"
-        });
-    });
-
-    button.on("pointerdown", callback);
-
-    return button;
+    World.add(world, mouseConstraint);
+    render.mouse = mouse;
 }
 
-function createSideMenu(scene) {
-    randomFoodImages.forEach((foodId, index) => {
-        let foodSprite = scene.add.image(
-            foodMenuX, 
-            foodMenuY + (menuFoodSize + foodMenuSpacing) * index, 
-            `food${foodId}`
-        )
-        .setScale(menuFoodSize / 500)
-        .setInteractive();
+// 🔹 Add "Next" Button
+function showNextButton() {
+    let button = document.createElement("button");
+    button.innerText = "Next";
+    button.style.position = "absolute";
+    button.style.top = "20px";
+    button.style.right = "20px";
+    button.style.padding = "10px 20px";
+    button.style.fontSize = "20px";
+    button.style.background = "white";
+    button.style.border = "none";
+    button.style.cursor = "pointer";
+    button.onclick = () => window.location.href = "/next";
 
-        foodSprite.menuFoodID = ++foodCounter; // Assign unique ID
-        foodSprite.isDragged = false;
-
-        foodSprite.originalX = foodSprite.x;
-        foodSprite.originalY = foodSprite.y;
-
-        scene.input.setDraggable(foodSprite);
-        menuFoodSprites.push(foodSprite);
-    });
+    document.body.appendChild(button);
 }
 
-function update() {}
+// 🔹 Initialize Everything
+function startGame() {
+    createBoundaries();
+    spawnShapes();
+    spawnChains();
+    enableDragging();
+    setTimeout(showNextButton, SETTINGS.nextButtonDelay);
+}
+window.onload = startGame;
+
