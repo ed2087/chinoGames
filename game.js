@@ -1,208 +1,250 @@
-// Matter.js Aliases
-const { Engine, Render, World, Bodies, Runner, Mouse, MouseConstraint, Constraint } = Matter;
+// // Matter.js Aliases
+const { Engine, Render, World, Bodies, Runner, Mouse, MouseConstraint, Composite, Constraint, Events } = Matter;
 
-// 🔹 Global SETTINGS (Auto-Adjusted)
-const SETTINGS = {
-    gravity: 1,
-    numShapes: 10, // Will be adjusted dynamically
-    shapeMinSize: 20,
-    shapeMaxSize: 80,
-    numChains: 2, // Will be adjusted dynamically
-    chainLinks: 7,
-    chainSpacing: 700,
-    nextButtonDelay: 5000,
-    airResistance: 0.01,
-    angularDamping: 0.1,
-    lightSource: { x: 400, y: 100 }
+// 🔹 Global Configuration Object
+const CONFIG = {
+    engine: Engine.create(),
+    world: null,
+    runner: Runner.create(),
+    canvas: document.getElementById("gameCanvas"),
+    ctx: null,
+    render: null,
+
+    // Settings
+    settings: {
+        gravity: 0.5,
+        numShapes: 10,
+        shapeMinSize: 20,
+        shapeMaxSize: 80,
+        numChains: 2,
+        chainLinks: 7,
+        nextButtonDelay: 5000,
+        airResistance: 0.01,
+        angularDamping: 0.1,
+        wallsPadding: 100,
+        outOfBoundsThreshold: 300, // Detect & remove off-screen objects
+    },
+
+    fps: 0,
+    lastFrameTime: performance.now(),
+    fpsDisplay: null,
+
+    shapeColors: ["#D72638", "#3E92CC", "#F49D37", "#5A189A", "#3A5A40", "#FFBA08"],
+    chainColors: ["#FFFFFF", "#A2D2FF", "#FFAFCC"],
+
+    nextUrl: "/contact",
 };
 
-// Create Physics Engine
-const engine = Engine.create();
-const world = engine.world;
-world.gravity.y = SETTINGS.gravity;
+// Initialize the World
+CONFIG.world = CONFIG.engine.world;
+CONFIG.world.gravity.y = CONFIG.settings.gravity;
 
-// Canvas Setup
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
+// Initialize Canvas
+CONFIG.ctx = CONFIG.canvas.getContext("2d");
 
-// 🔹 Resize Canvas for Any Device
-function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+// 🔹 Resize Canvas AFTER initializing render
+function handleResize() {
+    if (!CONFIG.render) return; // Prevent error if render isn't ready
+
+    CONFIG.canvas.width = window.innerWidth;
+    CONFIG.canvas.height = window.innerHeight;
+
+    CONFIG.render.options.width = CONFIG.canvas.width;
+    CONFIG.render.options.height = CONFIG.canvas.height;
+
+    Composite.clear(CONFIG.world, false); // Keep objects, clear boundaries
+    createBoundaries();
 }
-resizeCanvas();
-window.addEventListener("resize", resizeCanvas);
 
-// Matter.js Renderer
-const render = Render.create({
-    canvas: canvas,
-    engine: engine,
+// Attach resize & orientation events
+window.addEventListener("resize", handleResize);
+window.addEventListener("orientationchange", handleResize);
+handleResize(); // Call it after everything is set up
+
+
+function showNextButton() {
+    let button = document.createElement("button");
+    button.innerText = "Next";
+    Object.assign(button.style, { position: "absolute", top: "20px", right: "20px", padding: "10px 20px", fontSize: "20px", background: "white", border: "none", cursor: "pointer" });
+    button.onclick = () => window.location.href = CONFIG.nextUrl;
+    document.body.appendChild(button);
+}
+
+// 🔹 Initialize Matter.js Renderer
+CONFIG.render = Render.create({
+    canvas: CONFIG.canvas,
+    engine: CONFIG.engine,
     options: {
-        width: canvas.width,
-        height: canvas.height,
+        width: window.innerWidth,
+        height: window.innerHeight,
         wireframes: false,
-        background: "black"
+        background: "black",
     }
 });
-Render.run(render);
-
-// Run Matter.js Engine
-const runner = Runner.create();
-Runner.run(runner, engine);
+Render.run(CONFIG.render);
+Runner.run(CONFIG.runner, CONFIG.engine);
 
 // 🔹 FPS Counter
-let fps = 0;
-let lastFrameTime = performance.now();
-const fpsDisplay = document.createElement("div");
-fpsDisplay.style.position = "absolute";
-fpsDisplay.style.top = "10px";
-fpsDisplay.style.left = "10px";
-fpsDisplay.style.color = "white";
-fpsDisplay.style.fontSize = "16px";
-fpsDisplay.innerText = "FPS: --";
-document.body.appendChild(fpsDisplay);
+CONFIG.fpsDisplay = document.createElement("div");
+Object.assign(CONFIG.fpsDisplay.style, {
+    position: "absolute",
+    top: "10px",
+    left: "10px",
+    color: "white",
+    fontSize: "16px",
+});
+CONFIG.fpsDisplay.innerText = "FPS: --";
+document.body.appendChild(CONFIG.fpsDisplay);
 
 function updateFPS() {
     let now = performance.now();
-    fps = Math.round(1000 / (now - lastFrameTime));
-    lastFrameTime = now;
-    fpsDisplay.innerText = `FPS: ${fps}`;
-}
-setInterval(updateFPS, 1000);
+    CONFIG.fps = Math.round(1000 / (now - CONFIG.lastFrameTime));
+    CONFIG.lastFrameTime = now;
+    CONFIG.fpsDisplay.innerText = `FPS: ${CONFIG.fps}`;
+    
+    adjustSettings(); // 🔥 Re-added FPS-based scaling
 
-// 🔹 Adaptive Object Scaling Based on Device Size
+    requestAnimationFrame(updateFPS);
+}
+requestAnimationFrame(updateFPS);
+
+// 🔹 Adaptive Object Scaling Based on FPS
 function adjustSettings() {
     let width = window.innerWidth;
+    let numShapes = 100, numChains = 5, chainLinks = 10;
 
     if (width < 800) {
-        SETTINGS.numShapes = 8;
-        SETTINGS.numChains = 1;
-        SETTINGS.chainLinks = 5;
+        numShapes = 8;
+        numChains = 1;
+        chainLinks = 5;
     } else if (width < 1200) {
-        SETTINGS.numShapes = 10;
-        SETTINGS.numChains = 2;
-        SETTINGS.chainLinks = 4;
-    } else {
-        SETTINGS.numShapes = 30;
-        SETTINGS.numChains = 5;
-        SETTINGS.chainLinks = 8;
+        numShapes = 20;
+        numChains = 2;
+        chainLinks = 4;
     }
+
+    if (CONFIG.fps < 30) {
+        numShapes = Math.max(5, numShapes - 10);
+        numChains = Math.max(1, numChains - 1);
+        chainLinks = Math.max(3, chainLinks - 2);
+    } else if (CONFIG.fps > 50) {
+        numShapes += 20;
+        numChains += 2;
+        chainLinks += 3;
+    }
+
+    CONFIG.settings.numShapes = numShapes;
+    CONFIG.settings.numChains = numChains;
+    CONFIG.settings.chainLinks = chainLinks;
 }
-adjustSettings();
-window.addEventListener("resize", adjustSettings);
 
-// 🔹 Create Boundaries (Keep Everything Inside the Screen)
+// 🔹 Create Boundaries
 function createBoundaries() {
-    let ground = Bodies.rectangle(canvas.width / 2, canvas.height, canvas.width, 50, { isStatic: true });
-    let leftWall = Bodies.rectangle(0, canvas.height / 2, 50, canvas.height, { isStatic: true });
-    let rightWall = Bodies.rectangle(canvas.width, canvas.height / 2, 50, canvas.height, { isStatic: true });
-    let ceiling = Bodies.rectangle(canvas.width / 2, 0, canvas.width, 50, { isStatic: true });
-
-    World.add(world, [ground, leftWall, rightWall, ceiling]);
+    let boundaries = [
+        Bodies.rectangle(CONFIG.canvas.width / 2, CONFIG.canvas.height, CONFIG.canvas.width, CONFIG.settings.wallsPadding, { 
+            isStatic: true, label: "boundary", render: { fillStyle: "#A9A9A9" } // Concrete color
+        }),
+        Bodies.rectangle(0, CONFIG.canvas.height / 2, CONFIG.settings.wallsPadding, CONFIG.canvas.height, { 
+            isStatic: true, label: "boundary", render: { fillStyle: "#B22222" } // Brick red
+        }),
+        Bodies.rectangle(CONFIG.canvas.width, CONFIG.canvas.height / 2, CONFIG.settings.wallsPadding, CONFIG.canvas.height, { 
+            isStatic: true, label: "boundary", render: { fillStyle: "#B22222" } // Brick red
+        }),
+        Bodies.rectangle(CONFIG.canvas.width / 2, 0, CONFIG.canvas.width, CONFIG.settings.wallsPadding, { 
+            isStatic: true, label: "boundary", render: { fillStyle: "#A9A9A9" } // Concrete color
+        })
+        
+    ];
+    Composite.add(CONFIG.world, boundaries);
 }
 
 // 🔹 Spawn Random Shapes
 function spawnShapes() {
-    let colors = ["#FF6B6B", "#4ECDC4", "#FFE66D", "#FFAFCC", "#A2D2FF", "#BDB2FF"];
+    for (let i = 0; i < CONFIG.settings.numShapes; i++) {
+        let x = Math.random() * CONFIG.canvas.width;
+        let y = Math.random() * CONFIG.canvas.height / 2;
+        let size = Math.random() * (CONFIG.settings.shapeMaxSize - CONFIG.settings.shapeMinSize) + CONFIG.settings.shapeMinSize;
+        let color = CONFIG.shapeColors[Math.floor(Math.random() * CONFIG.shapeColors.length)];
 
-    for (let i = 0; i < SETTINGS.numShapes; i++) {
-        let size = Math.random() * (SETTINGS.shapeMaxSize - SETTINGS.shapeMinSize) + SETTINGS.shapeMinSize;
-        let color = colors[Math.floor(Math.random() * colors.length)];
-        let shapeType = Math.random() > 0.5 ? "circle" : "rectangle";
+        // 🔹 Create a shadow (slightly darker, offset behind)
+        let shadow = Bodies.rectangle(x + 5, y + 5, size, size, {
+            isStatic: true, 
+            isSensor: true,  // ✅ Shadow won't affect physics
+            render: { fillStyle: "rgba(0,0,0,0.2)", strokeStyle: "transparent" }
+        });
+        
 
-        let shape;
-        if (shapeType === "circle") {
-            shape = Bodies.circle(Math.random() * canvas.width, Math.random() * canvas.height / 2, size / 2, {
-                restitution: 0.8,
-                friction: 0.5,
-                render: { fillStyle: color },
-                airResistance: SETTINGS.airResistance,
-                angularDamping: SETTINGS.angularDamping
-            });
-        } else {
-            shape = Bodies.rectangle(Math.random() * canvas.width, Math.random() * canvas.height / 2, size, size, {
-                restitution: 0.8,
-                friction: 0.5,
-                render: { fillStyle: color },
-                airResistance: SETTINGS.airResistance,
-                angularDamping: SETTINGS.angularDamping
-            });
-        }
+        // 🔹 Main block
+        let shape = Bodies.rectangle(x, y, size, size, {
+            restitution: 0.2,
+            friction: 0.5,
+            density: 0.01,
+            render: { 
+                fillStyle: color,
+                strokeStyle: "#000000", // Black outline
+                lineWidth: 4 
+            }
+        });
 
-        World.add(world, shape);
+        World.add(CONFIG.world, [shadow, shape]); // Add both the shadow and block
     }
 }
 
-// 🔹 Spawn Chains
-function spawnChains() {
-    let colors = ["#FFFFFF", "#A2D2FF", "#FFAFCC"];
-    let startX = (canvas.width - (SETTINGS.numChains - 1) * SETTINGS.chainSpacing) / 2;
 
-    for (let i = 0; i < SETTINGS.numChains; i++) {
-        let base = Bodies.circle(startX + i * SETTINGS.chainSpacing, 50, 10, { isStatic: true });
+// 🔹 Spawn Chains (Fix Restored)
+function spawnChains() {
+    let startX = CONFIG.canvas.width / 2;
+
+    for (let i = 0; i < CONFIG.settings.numChains; i++) {
+        let base = Bodies.circle(startX + i * 100, 50, 10, { isStatic: true, label: "chainBase" });
         let lastBody = base;
 
-        for (let j = 0; j < SETTINGS.chainLinks; j++) {
-            let size = 30;
-            let body = Bodies.circle(lastBody.position.x, lastBody.position.y + size, size / 2, {
-                restitution: 0.6,
-                friction: 0.5,
-                render: { fillStyle: colors[Math.floor(Math.random() * colors.length)] },
-                airResistance: SETTINGS.airResistance,
-                angularDamping: SETTINGS.angularDamping
-            });
+        for (let j = 0; j < CONFIG.settings.chainLinks; j++) {
+            let body = Bodies.circle(lastBody.position.x, lastBody.position.y + 30, 15, { restitution: 0.6, label: "chainLink" });
+            let constraint = Constraint.create({ bodyA: lastBody, bodyB: body, length: 30, stiffness: 0.8 });
 
-            let constraint = Constraint.create({
-                bodyA: lastBody,
-                bodyB: body,
-                length: size,
-                stiffness: 0.5
-            });
-
-            World.add(world, [body, constraint]);
+            World.add(CONFIG.world, [body, constraint]);
             lastBody = body;
         }
-
-        World.add(world, base);
+        World.add(CONFIG.world, base);
     }
 }
 
-// 🔹 Allow User to Drag Shapes
+// 🔹 Enable Dragging
 function enableDragging() {
-    let mouse = Mouse.create(render.canvas);
-    let mouseConstraint = MouseConstraint.create(engine, {
+    let mouse = Mouse.create(CONFIG.render.canvas);
+    let mouseConstraint = MouseConstraint.create(CONFIG.engine, {
         mouse: mouse,
         constraint: { stiffness: 0.2, render: { visible: false } }
     });
 
-    World.add(world, mouseConstraint);
-    render.mouse = mouse;
+    World.add(CONFIG.world, mouseConstraint);
+    CONFIG.render.mouse = mouse;
 }
 
-// 🔹 Add "Next" Button
-function showNextButton() {
-    let button = document.createElement("button");
-    button.innerText = "Next";
-    button.style.position = "absolute";
-    button.style.top = "20px";
-    button.style.right = "20px";
-    button.style.padding = "10px 20px";
-    button.style.fontSize = "20px";
-    button.style.background = "white";
-    button.style.border = "none";
-    button.style.cursor = "pointer";
-    button.onclick = () => window.location.href = "/next";
+// 🔹 Collision Handling
+function handleCollisions(event) {
+    event.pairs.forEach(pair => {
+        let bodyA = pair.bodyA;
+        let bodyB = pair.bodyB;
 
-    document.body.appendChild(button);
+        if (bodyA.label.includes("boundary") || bodyB.label.includes("boundary") ||
+            bodyA.label.includes("chainLink") || bodyB.label.includes("chainLink")) {
+            return;
+        }
+
+        // bodyA.render.fillStyle = "#FF0000";
+        // bodyB.render.fillStyle = "#FF0000";
+    });
 }
+Events.on(CONFIG.engine, "collisionStart", handleCollisions);
 
-// 🔹 Initialize Everything
+// 🔹 Start the Game
 function startGame() {
     createBoundaries();
     spawnShapes();
     spawnChains();
     enableDragging();
-    setTimeout(showNextButton, SETTINGS.nextButtonDelay);
+    setTimeout(showNextButton, CONFIG.settings.nextButtonDelay);
 }
 window.onload = startGame;
-
