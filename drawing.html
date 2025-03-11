@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glowing Drawing Game</title>
+    <link rel="stylesheet" href="../public/css/drawing.css">    
+</head>
+<body>
+    <canvas id="drawingCanvas"></canvas>
+    <div class="controls-container">
+        <button onclick="clearCanvas()">Clear</button>
+        <div class="line-width-controls">
+            <button onclick="decreaseLineWidth()">-</button>
+            <span class="line-width-display" id="lineWidthDisplay">8</span>
+            <button onclick="increaseLineWidth()">+</button>
+        </div>
+        <button id="fullscreenButton">Fullscreen</button>
+    </div>
+    
+    <!-- Audio element for drawing sound -->
+    <audio id="drawingAudio" loop>
+        <source src="../public/audio/drawing.wav" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script src="../public/js/drawing.js"></script>
+</body>
+</html>
