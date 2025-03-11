@@ -2,39 +2,186 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Physics Playground</title>
-
-    <!-- Matter.js for physics -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.18.0/matter.min.js"></script>
-
-    <!-- Custom Game Logic -->
-    <script src="game.js" defer></script>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glowing Drawing Game</title>
     <style>
-        /* Reset Styles */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        /* Fullscreen Canvas */
-        body, html {
-            width: 100vw;
-            height: 100vh;
-            background: black;
-            overflow: hidden;
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background-color: black; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
+        canvas { display: block; touch-action: none; }
+        
+        /* UI Container */
+        .controls-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
             align-items: center;
-            justify-content: center;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 15px;
+            border-radius: 10px;
+        }
+        
+        /* Buttons */
+        .controls-container button {
+            font-size: 16px;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            background: white;
+            margin: 0 5px;
         }
 
-        canvas {
-            position: absolute;
-            width: 100%;
-            height: 100%;
+        /* Line width controls */
+        .line-width-controls {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        
+        .line-width-controls button {
+            font-size: 18px;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+            background: white;
+        }
+
+        .line-width-display {
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 0 10px;
         }
     </style>
 </head>
-<body>
-    <!-- Fullscreen Canvas -->
-    <canvas id="gameCanvas"></canvas>
+<body onload="requestFullScreen()">
+    <canvas id="drawingCanvas"></canvas>
+
+    <!-- UI Controls -->
+    <div class="controls-container">
+        <button onclick="clearCanvas()">Clear</button>
+        <div class="line-width-controls">
+            <button onclick="decreaseLineWidth()">-</button>
+            <span class="line-width-display" id="lineWidthDisplay">8</span>
+            <button onclick="increaseLineWidth()">+</button>
+        </div>
+        <button onclick="goHome()">Home</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("drawingCanvas");
+        const ctx = canvas.getContext("2d");
+        let lineWidth = 8; // Default line width
+
+        function resizeCanvas() {
+            const savedImage = localStorage.getItem("drawingCanvas");
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            if (savedImage) {
+                let img = new Image();
+                img.src = savedImage;
+                img.onload = () => ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        let drawing = false;
+        let hue = 0;
+
+        function startDrawing(e) {
+            drawing = true;
+            ctx.beginPath();
+            draw(e);
+        }
+
+        function stopDrawing() {
+            drawing = false;
+            ctx.beginPath();
+            saveDrawing();
+        }
+
+        function draw(e) {
+            if (!drawing) return;
+            ctx.lineWidth = lineWidth;
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
+            
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = `hsl(${hue}, 100%, 50%)`;
+            ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+
+            let x = e.clientX || e.touches[0].clientX;
+            let y = e.clientY || e.touches[0].clientY;
+
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+
+            hue += 2;
+            if (hue >= 360) hue = 0;
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            localStorage.removeItem("drawingCanvas");
+        }
+
+        function goHome() {
+            alert("Home button clicked! Add navigation logic here.");
+        }
+
+        function requestFullScreen() {
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            } else if (document.documentElement.mozRequestFullScreen) { 
+                document.documentElement.mozRequestFullScreen();
+            } else if (document.documentElement.webkitRequestFullscreen) { 
+                document.documentElement.webkitRequestFullscreen();
+            } else if (document.documentElement.msRequestFullscreen) { 
+                document.documentElement.msRequestFullscreen();
+            }
+        }
+
+        function saveDrawing() {
+            localStorage.setItem("drawingCanvas", canvas.toDataURL());
+        }
+
+        function increaseLineWidth() {
+            if (lineWidth < 30) {
+                lineWidth += 2;
+                document.getElementById("lineWidthDisplay").textContent = lineWidth;
+            }
+        }
+
+        function decreaseLineWidth() {
+            if (lineWidth > 2) {
+                lineWidth -= 2;
+                document.getElementById("lineWidthDisplay").textContent = lineWidth;
+            }
+        }
+
+        // Event listeners for mouse/touch input
+        canvas.addEventListener("mousedown", startDrawing);
+        canvas.addEventListener("mousemove", draw);
+        canvas.addEventListener("mouseup", stopDrawing);
+        canvas.addEventListener("mouseleave", stopDrawing);
+
+        canvas.addEventListener("touchstart", startDrawing);
+        canvas.addEventListener("touchmove", draw);
+        canvas.addEventListener("touchend", stopDrawing);
+
+        function gameLoop() {
+            requestAnimationFrame(gameLoop);
+        }
+        gameLoop();
+    </script>
 </body>
 </html>
