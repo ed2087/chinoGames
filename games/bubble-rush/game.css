@@ -1,0 +1,437 @@
+/* ============================================
+   BUBBLE RUSH - GAME STYLES
+   ============================================ */
+
+/* ============================================
+   CSS VARIABLES
+   ============================================ */
+:root {
+    --life-green: #4CAF50;
+    --life-yellow: #FFD93D;
+    --life-red: #FF6B6B;
+    --bg-gradient-1: #E3F2FD;
+    --bg-gradient-2: #F3E5F5;
+    --center-number-size: 180px;
+}
+
+/* ============================================
+   RESET & BASE
+   ============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
+    background-attachment: fixed;
+    overflow: hidden;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* ============================================
+   MAIN CONTAINER
+   ============================================ */
+.game-container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ============================================
+   TOP BAR
+   ============================================ */
+.top-bar {
+    height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+    gap: 15px;
+}
+
+.btn-icon {
+    width: 50px;
+    height: 50px;
+    border: none;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    font-size: 28px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+.btn-icon:active {
+    transform: scale(0.95);
+}
+
+/* Life Bar */
+.life-bar-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    max-width: 300px;
+}
+
+.life-label {
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+}
+
+.life-bar {
+    flex: 1;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    overflow: hidden;
+    border: 3px solid #333;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.life-bar-fill {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, var(--life-green) 0%, #6BCF7F 100%);
+    transition: width 0.3s ease, background 0.3s ease;
+    border-radius: 12px;
+}
+
+.life-bar-fill.warning {
+    background: linear-gradient(90deg, var(--life-yellow) 0%, #FFE066 100%);
+    animation: lifePulse 0.5s ease-in-out infinite;
+}
+
+.life-bar-fill.danger {
+    background: linear-gradient(90deg, var(--life-red) 0%, #FF8888 100%);
+    animation: lifePulse 0.3s ease-in-out infinite;
+}
+
+@keyframes lifePulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* Score Display */
+.score-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    background: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+.score-label {
+    font-size: 18px;
+    opacity: 0.7;
+}
+
+/* ============================================
+   INFO BAR
+   ============================================ */
+.info-bar {
+    height: 60px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 20px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+}
+
+.target-display,
+.combo-display,
+.goal-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    padding: 8px 16px;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.target-label,
+.goal-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #666;
+}
+
+.target-number {
+    font-size: 36px;
+    font-weight: 900;
+    color: #4A90E2;
+}
+
+.combo-text {
+    font-size: 16px;
+    font-weight: 600;
+    color: #666;
+}
+
+.combo-value {
+    font-size: 28px;
+    font-weight: 900;
+    color: #FF6B6B;
+}
+
+.combo-display.active {
+    animation: comboPulse 0.3s ease-in-out;
+}
+
+@keyframes comboPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+.goal-label {
+    font-size: 14px;
+}
+
+#goalValue {
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+}
+
+/* ============================================
+   CANVAS CONTAINER
+   ============================================ */
+.canvas-container {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+#gameCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* ============================================
+   CENTER NUMBER (Physical Object)
+   ============================================ */
+.center-number {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: var(--center-number-size);
+    height: var(--center-number-size);
+    background: linear-gradient(135deg, #FF6B6B 0%, #FF90BC 100%);
+    border-radius: 24px;
+    border: 6px solid white;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 50;
+    animation: centerPulse 2s ease-in-out infinite;
+}
+
+@keyframes centerPulse {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.05);
+        box-shadow: 0 12px 48px rgba(255, 107, 107, 0.5);
+    }
+}
+
+#centerNumberText {
+    font-size: 120px;
+    font-weight: 900;
+    color: white;
+    text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3);
+    user-select: none;
+}
+
+/* ============================================
+   FLOATING TEXT ANIMATIONS
+   ============================================ */
+.floating-text-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 200;
+}
+
+.floating-text {
+    position: absolute;
+    font-size: 36px;
+    font-weight: 900;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    animation: floatUp 1s ease-out forwards;
+    pointer-events: none;
+}
+
+.floating-text.correct {
+    color: #4CAF50;
+}
+
+.floating-text.wrong {
+    color: #FF6B6B;
+}
+
+.floating-text.bonus {
+    color: #FFD93D;
+    font-size: 48px;
+}
+
+@keyframes floatUp {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-100px) scale(1.5);
+    }
+}
+
+/* ============================================
+   OVERLAYS
+   ============================================ */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(10px);
+}
+
+.overlay.hidden {
+    display: none;
+}
+
+.overlay-content {
+    background: white;
+    padding: 50px;
+    border-radius: 32px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    max-width: 500px;
+    margin: 20px;
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0) rotate(-180deg);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+.overlay-content h1 {
+    font-size: 48px;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.game-instructions {
+    font-size: 24px;
+    color: #666;
+    margin: 20px 0;
+}
+
+.game-rules {
+    margin: 30px 0;
+    text-align: left;
+}
+
+.game-rules p {
+    font-size: 18px;
+    color: #666;
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.final-stats {
+    margin: 30px 0;
+}
+
+.final-stats p {
+    font-size: 24px;
+    color: #666;
+    margin: 15px 0;
+}
+
+.final-score {
+    font-size: 32px !important;
+    font-weight: 700;
+    color: #4CAF50 !important;
+}
+
+.final-score span {
+    font-size: 48px;
+    color: #4CAF50;
+}
+
+.btn-large {
+    font-size: 28px;
+    padding: 20px 60px;
+    min-height: 70px;
+    margin-top: 20px;
+}
+
+/* Win Content */
+.win-content h1 {
+    color: #4CAF50;
+}
+
+/* ============================================
+   RESPONSIVE - iPad Pro
+   ============================================ */
+@media (min-width: 1024px) {
+    :root {
+        --center-number-size: 220px;
+    }
+    
+    #centerNumberText {
+        font-size: 140px;
+    }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+.hidden {
+    display: none !important;
+}

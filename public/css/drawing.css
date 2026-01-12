@@ -1,0 +1,83 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: black;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+}
+
+canvas {
+    display: block;
+    touch-action: none;
+    width: 100vw;
+    height: 100vh;
+    position: fixed; /* Fix the position to always stay visible */
+    top: 0;
+    left: 0;
+    border: solid 2px red; /* Visible border to confirm it works */
+    background: black; /* Ensure a black background */
+}
+
+.controls-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px 15px;
+    border-radius: 10px;
+    z-index: 1000; /* Ensure controls stay above the canvas */
+}
+
+.controls-container button {
+    font-size: 16px;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    background: white;
+    margin: 0 5px;
+}
+
+.controls-container button:hover {
+    background: #f0f0f0;
+}
+
+.line-width-controls {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.line-width-controls button {
+    font-size: 18px;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    background: white;
+}
+
+.line-width-controls button:hover {
+    background: #f0f0f0;
+}
+
+.line-width-display {
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 0 10px;
+}

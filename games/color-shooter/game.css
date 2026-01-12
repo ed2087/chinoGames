@@ -1,0 +1,287 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Arial Black', sans-serif;
+    background: linear-gradient(180deg, #0a0e27 0%, #1a1f3a 100%);
+}
+
+#gameCanvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+}
+
+/* Start Screen */
+#startScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    z-index: 1000;
+    animation: gradientShift 3s ease infinite;
+}
+
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+#startScreen h1 {
+    font-size: 48px;
+    color: white;
+    text-shadow: 0 0 20px rgba(255,255,255,0.5),
+                 0 0 40px rgba(255,255,255,0.3);
+    margin-bottom: 20px;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+#startScreen p {
+    font-size: 24px;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 40px;
+}
+
+#startButton {
+    font-size: 32px;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border: none;
+    padding: 20px 60px;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(245,87,108,0.4);
+    transition: all 0.3s ease;
+    animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+#startButton:hover {
+    transform: scale(1.1);
+    box-shadow: 0 15px 40px rgba(245,87,108,0.6);
+}
+
+#startButton:active {
+    transform: scale(0.95);
+}
+
+/* Game UI */
+#gameUI {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.ui-top {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    pointer-events: none;
+}
+
+.score, .level {
+    background: rgba(255,255,255,0.95);
+    padding: 15px 30px;
+    border-radius: 30px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+/* Target Popup */
+.popup {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: rgba(255,255,255,0.98);
+    border-radius: 30px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    pointer-events: all;
+    transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    max-width: 90%;
+}
+
+.popup.active {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.popup.hidden {
+    display: none;
+}
+
+.popup-content {
+    text-align: center;
+}
+
+#popupTitle {
+    font-size: 36px;
+    color: #333;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+#popupShape {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+}
+
+#popupButton {
+    font-size: 28px;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    padding: 20px 50px;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 8px 25px rgba(102,126,234,0.4);
+    transition: all 0.2s ease;
+}
+
+#popupButton:hover {
+    transform: scale(1.05);
+}
+
+#popupButton:active {
+    transform: scale(0.95);
+}
+
+/* Progress Bar */
+.progress-container {
+    position: absolute;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 400px;
+    max-width: 90%;
+}
+
+.progress-label {
+    text-align: center;
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.progress-bar {
+    width: 100%;
+    height: 30px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4CAF50 0%, #8BC34A 100%);
+    border-radius: 20px;
+    transition: width 0.3s ease;
+    box-shadow: 0 0 20px rgba(76,175,80,0.6);
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    #startScreen h1 {
+        font-size: 32px;
+    }
+    
+    #startScreen p {
+        font-size: 18px;
+    }
+    
+    #startButton {
+        font-size: 24px;
+        padding: 15px 40px;
+    }
+    
+    #popupTitle {
+        font-size: 28px;
+    }
+    
+    #popupShape {
+        width: 100px;
+        height: 100px;
+        font-size: 60px;
+    }
+    
+    #popupButton {
+        font-size: 22px;
+        padding: 15px 35px;
+    }
+}
+
+
+/* Back Button */
+.back-button {
+    position: fixed;
+    top: 28px;
+    left: 206px;
+    z-index: 200;
+    background: rgba(255, 255, 255, 0.95);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+    pointer-events: all;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.back-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.back-button:active {
+    transform: scale(0.95);
+}
+
+.back-button::before {
+    content: '←';
+    font-size: 24px;
+}

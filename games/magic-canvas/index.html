@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Magic Canvas</title>
+    <script src="../../js/global.js"></script>
+    <link rel="stylesheet" href="../../styles/global.css">
+    <link rel="stylesheet" href="game.css">
+
+        <!-- PWA & Icon support - ADD THESE -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512.png">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#4A90E2">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Top bar with minimal controls -->
+        <div class="top-bar">
+            <button class="back-btn" onclick="window.location.href='../../index.html'">←</button>
+            <h1>Magic Canvas</h1>
+            <button class="clear-btn" id="clearBtn">🗑️</button>
+        </div>
+
+        <!-- Main drawing canvas - takes up most of the screen -->
+        <div class="canvas-area">
+            <canvas id="magicCanvas"></canvas>
+            <div class="floating-sparkles" id="sparkles"></div>
+        </div>
+
+        <!-- Compact bottom toolbar -->
+        <div class="toolbar">
+            <!-- Drawing tools -->
+            <div class="tool-group">
+                <button class="tool-btn active" data-tool="brush" title="Brush">🖌️</button>
+                <button class="tool-btn" data-tool="rainbow" title="Rainbow">🌈</button>
+                <button class="tool-btn" data-tool="sparkle" title="Sparkle">✨</button>
+                <button class="tool-btn" data-tool="eraser" title="Eraser">🧽</button>
+            </div>
+
+            <!-- Color palette -->
+            <div class="color-group">
+                <button class="color-btn active" data-color="#FF3B3B" style="background: #FF3B3B;"></button>
+                <button class="color-btn" data-color="#FF8C00" style="background: #FF8C00;"></button>
+                <button class="color-btn" data-color="#FFD700" style="background: #FFD700;"></button>
+                <button class="color-btn" data-color="#32CD32" style="background: #32CD32;"></button>
+                <button class="color-btn" data-color="#4169E1" style="background: #4169E1;"></button>
+                <button class="color-btn" data-color="#9370DB" style="background: #9370DB;"></button>
+                <button class="color-btn" data-color="#FF69B4" style="background: #FF69B4;"></button>
+                <button class="color-btn" data-color="#000000" style="background: #000000;"></button>
+            </div>
+
+            <!-- Shapes -->
+            <div class="shape-group">
+                <button class="tool-btn" data-tool="circle" title="Circle">⭕</button>
+                <button class="tool-btn" data-tool="square" title="Square">⬜</button>
+                <button class="tool-btn" data-tool="triangle" title="Triangle">🔺</button>
+                <button class="tool-btn" data-tool="star" title="Star">⭐</button>
+            </div>
+
+            <!-- Numbers -->
+            <div class="number-group">
+                <button class="tool-btn" data-tool="number" data-number="1" title="Number 1">1</button>
+                <button class="tool-btn" data-tool="number" data-number="2" title="Number 2">2</button>
+                <button class="tool-btn" data-tool="number" data-number="3" title="Number 3">3</button>
+                <button class="tool-btn" data-tool="number" data-number="4" title="Number 4">4</button>
+                <button class="tool-btn" data-tool="number" data-number="5" title="Number 5">5</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load audio system and game -->
+    <script src="../../js/audio-system.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

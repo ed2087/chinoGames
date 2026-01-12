@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saved Meals</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #ffcc66;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        #meals-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+        }
+        .meal {
+            background: white;
+            border: 2px solid #333;
+            border-radius: 10px;
+            margin: 10px;
+            padding: 10px;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .meal img {
+            width: 80px;
+            height: 80px;
+            margin: 5px;
+        }
+        #full-view {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border: 3px solid #333;
+            border-radius: 15px;
+            display: none;
+            position: relative;
+            width: 900px;
+            height: 500px;
+        }
+        #full-view img {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+        }
+        .button {
+            display: inline-block;
+            margin: 15px;
+            padding: 15px;
+            font-size: 20px;
+            color: white;
+            background: #ff5733;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .button:hover {
+            background: #ff2200;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Saved Meals</h1>
+    <div id="meals-container"></div>
+
+    <button class="button" onclick="clearMeals()">Clear All Meals</button>
+    <button class="button" onclick="goBack()">Make Another Meal</button>
+
+    <div id="full-view">
+        <h2>Meal Details</h2>
+        <div id="full-meal"></div>
+        <button class="button" onclick="closeFullView()">Close</button>
+    </div>
+
+    <script>
+        function loadMeals() {
+            let savedMeals = JSON.parse(localStorage.getItem("savedMeals")) || [];
+            let container = document.getElementById("meals-container");
+            container.innerHTML = "";
+
+            if (savedMeals.length === 0) {
+                container.innerHTML = "<h2>No meals saved yet!</h2>";
+                return;
+            }
+
+            savedMeals.forEach((meal, index) => {
+                let mealDiv = document.createElement("div");
+                mealDiv.classList.add("meal");
+                mealDiv.dataset.index = index;
+
+                meal.forEach(foodItem => {
+                    let img = document.createElement("img");
+                    img.src = `sprites/FortressSide_Pack25_Fast_food_ (${foodItem.key.replace("food", "")}).png`;
+                    mealDiv.appendChild(img);
+                });
+
+                mealDiv.onclick = () => showFullMeal(index);
+                container.appendChild(mealDiv);
+            });
+        }
+
+        function showFullMeal(index) {
+            let savedMeals = JSON.parse(localStorage.getItem("savedMeals")) || [];
+            let meal = savedMeals[index];
+            let fullMealDiv = document.getElementById("full-meal");
+            fullMealDiv.innerHTML = "";
+
+            meal.forEach(foodItem => {
+                let img = document.createElement("img");
+                img.src = `sprites/FortressSide_Pack25_Fast_food_ (${foodItem.key.replace("food", "")}).png`;
+                img.style.left = `${foodItem.x - 300}px`;  // Adjust X position
+                img.style.top = `${foodItem.y - 100}px`;   // Adjust Y position
+                fullMealDiv.appendChild(img);
+            });
+
+            document.getElementById("full-view").style.display = "block";
+        }
+
+        function closeFullView() {
+            document.getElementById("full-view").style.display = "none";
+        }
+
+        function clearMeals() {
+            localStorage.removeItem("savedMeals");
+            loadMeals();
+        }
+
+        function goBack() {
+            window.location.href = "game.html";
+        }
+
+        window.onload = loadMeals;
+    </script>
+
+</body>
+</html>

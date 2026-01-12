@@ -1,0 +1,528 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #87CEEB 0%, #98FB98 100%);
+    overflow: hidden;
+}
+
+.app-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    min-height: 60px;
+    box-shadow: var(--shadow-soft);
+}
+
+.nav-back {
+    font-size: 18px;
+    color: var(--primary-blue);
+    text-decoration: none;
+    font-weight: 600;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius);
+    transition: all 0.2s ease;
+}
+
+.nav-back:hover {
+    background-color: rgba(74, 144, 226, 0.1);
+    transform: translateY(-1px);
+}
+
+.nav-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0;
+}
+
+.nav-spacer {
+    width: 80px;
+}
+
+.game-main {
+    height: calc(100vh - 60px);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* Game UI */
+.game-ui {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--bg-white);
+    box-shadow: var(--shadow-soft);
+    z-index: 10;
+}
+
+.level-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.level-text {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.progress-bar {
+    width: 120px;
+    height: 8px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-green), #8BC34A);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+.reset-btn {
+    background: linear-gradient(135deg, var(--primary-red), #FF8E53);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-soft);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.reset-btn:active {
+    transform: scale(0.95);
+    box-shadow: var(--shadow-hover);
+}
+
+/* Game Container game-area */
+.game-container {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+    max-height: 75vh;
+}
+
+/* Animated Target Line */
+.target-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #FFD700, var(--primary-orange), #FF6B6B, #A855F7, #3B82F6);
+    background-size: 400% 100%;
+    z-index: 15;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+    transition: top 0.3s ease;
+    border-radius: 3px;
+    animation: rainbowFlow 3s ease-in-out infinite;
+}
+
+@keyframes rainbowFlow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.target-line.celebrating {
+    animation: celebrateTarget 0.5s ease-in-out infinite alternate;
+    box-shadow: 0 0 30px rgba(255, 215, 0, 1);
+}
+
+@keyframes celebrateTarget {
+    from { 
+        transform: scaleY(1);
+        filter: brightness(1);
+    }
+    to { 
+        transform: scaleY(1.5);
+        filter: brightness(1.5);
+    }
+}
+
+.target-text {
+    position: absolute;
+    right: var(--spacing-sm);
+    top: -35px;
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    color: var(--text-dark);
+    padding: 10px 18px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    box-shadow: var(--shadow-soft);
+    white-space: nowrap;
+    animation: textPulse 2s ease-in-out infinite;
+}
+
+@keyframes textPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Lightning Effects */
+.lightning-effects {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.lightning {
+    position: absolute;
+    width: 2px;
+    height: 20px;
+    background: linear-gradient(to bottom, #FFFFFF, #FFD700, transparent);
+    opacity: 0;
+    animation: lightning 0.1s ease-in-out;
+}
+
+@keyframes lightning {
+    0% { opacity: 0; transform: scaleY(0); }
+    50% { opacity: 1; transform: scaleY(1); }
+    100% { opacity: 0; transform: scaleY(0); }
+}
+
+/* Fire Particles */
+.fire-particles {
+    position: absolute;
+    top: -10px;
+    left: 0;
+    right: 0;
+    height: 20px;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.fire-particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: radial-gradient(circle, #FF6B6B, #FFA500);
+    border-radius: 50%;
+    animation: fireRise 1s ease-out forwards;
+}
+
+@keyframes fireRise {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.5);
+    }
+}
+
+/* Celebration Overlay */
+.celebration-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 20;
+}
+
+.celebration-particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    animation: celebrate 2s ease-out forwards;
+}
+
+@keyframes celebrate {
+    0% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.5) rotate(360deg);
+    }
+}
+
+#gameCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    touch-action: none;
+}
+
+/* Shape Palette */
+.shape-palette {
+    display: flex;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background: var(--bg-white);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    justify-content: center;
+    flex-wrap: wrap;
+    border-top: 2px solid rgba(0, 0, 0, 0.05);
+}
+
+.shape-btn {
+    width: 70px;
+    height: 70px;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    position: relative;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.shape-btn:active {
+    transform: scale(0.9);
+    box-shadow: var(--shadow-hover);
+}
+
+.shape-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+}
+
+.shape-btn.spawning {
+    animation: spawnPulse 0.3s ease-out;
+}
+
+@keyframes spawnPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+/* Shape colors */
+.shape-btn.square { 
+    background: linear-gradient(135deg, #FF6B6B, #FF8E53); 
+}
+.shape-btn.rectangle { 
+    background: linear-gradient(135deg, #4ECDC4, #44A08D); 
+}
+.shape-btn.triangle { 
+    background: linear-gradient(135deg, var(--primary-green), #88D8A3); 
+}
+.shape-btn.circle { 
+    background: linear-gradient(135deg, #FFD93D, #FF6B6B); 
+}
+.shape-btn.star { 
+    background: linear-gradient(135deg, #B983FF, var(--primary-blue)); 
+}
+
+/* Mobile optimizations */
+@media (max-width: 480px) {
+    .game-ui {
+        padding: var(--spacing-xs) var(--spacing-sm);
+    }
+    
+    .level-text {
+        font-size: 1rem;
+    }
+    
+    .progress-bar {
+        width: 80px;
+    }
+    
+    .shape-btn {
+        width: 60px;
+        height: 60px;
+        font-size: 1.8rem;
+    }
+    
+    .shape-palette {
+        gap: var(--spacing-xs);
+        padding: var(--spacing-sm);
+    }
+    
+    .target-text {
+        font-size: 0.8rem;
+        padding: 8px 14px;
+        right: var(--spacing-xs);
+    }
+}
+
+/* Touch feedback and accessibility */
+* {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* Shape movement animations */
+.shape-moving {
+    animation: shapeWiggle 0.1s ease-in-out infinite;
+}
+
+@keyframes shapeWiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(1deg); }
+    75% { transform: rotate(-1deg); }
+}
+
+.shape-falling {
+    animation: shapeFall 0.5s ease-in;
+}
+
+@keyframes shapeFall {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Add this to your existing game.css */
+
+/* Countdown overlay styling */
+#countdownOverlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: #FFD700;
+    font-size: 4rem;
+    font-weight: bold;
+    padding: 30px 50px;
+    border-radius: 20px;
+    text-align: center;
+    z-index: 1000;
+    display: none;
+    border: 4px solid #FFD700;
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.7);
+    font-family: Arial, sans-serif;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    animation: pulse 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+    from {
+        transform: translate(-50%, -50%) scale(1);
+    }
+    to {
+        transform: translate(-50%, -50%) scale(1.05);
+    }
+}
+
+/* Ensure the game container has relative positioning for absolute positioning to work */
+.game-area {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Celebration particles (if you don't have these already) */
+.celebration-particle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 999;
+    animation: celebrateParticle 2s ease-out forwards;
+}
+
+@keyframes celebrateParticle {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(var(--moveX, 0), var(--moveY, 0)) scale(0);
+        opacity: 0;
+    }
+}
+
+/* Lightning effects */
+.lightning-effects {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 998;
+}
+
+.lightning {
+    position: absolute;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(to bottom, #FFD700, transparent);
+    animation: lightning 0.1s ease-out;
+}
+
+@keyframes lightning {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* Fire particles */
+.fire-particles {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 997;
+}
+
+.fire-particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    animation: fireRise 1s ease-out forwards;
+}
+
+@keyframes fireRise {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-200px) scale(0);
+        opacity: 0;
+    }
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    #countdownOverlay {
+        font-size: 3rem;
+        padding: 20px 30px;
+    }
+}
+
+@media (max-width: 480px) {
+    #countdownOverlay {
+        font-size: 2.5rem;
+        padding: 15px 25px;
+    }
+}
+
+
+.game-main {
+    height: calc(var(--vh, 1vh) * 100 - 60px) !important;
+}

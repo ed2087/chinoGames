@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Shape Blaster Academy</title>
+    <link rel="stylesheet" href="game.css">
+</head>
+<body>
+    <!-- Start Screen -->
+    <div id="startScreen">
+        <h1>🎯 SHAPE BLASTER ACADEMY 🎯</h1>
+        <p>Help the turrets destroy shapes!</p>
+        <button id="startButton">START GAME</button>
+    </div>
+
+    <!-- Game Canvas -->
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- Game UI -->
+    <div id="gameUI" style="display: none;">
+        <!-- Back Button -->
+        <button class="back-button" onclick="window.location.href='/'">Home</button>
+        
+        <!-- Score and Level Display -->
+        <div class="ui-top">
+            <div class="score">Score: <span id="score">0</span></div>
+            <div class="level">Level: <span id="level">1</span></div>
+        </div>
+
+        <!-- Target Popup -->
+        <div id="targetPopup" class="popup hidden">
+            <div class="popup-content">
+                <h2 id="popupTitle">GET READY!</h2>
+                <div id="popupShape"></div>
+                <button id="popupButton">START SHOOTING!</button>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-label">
+                <span id="progressText">Targets: 0/30</span>
+            </div>
+            <div class="progress-bar">
+                <div id="progressFill" class="progress-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load all game modules -->
+    <script src="js/particles.js"></script>
+    <script src="js/shapes.js"></script>
+    <script src="js/missiles.js"></script>
+    <script src="js/turrets.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>

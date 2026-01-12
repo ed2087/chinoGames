@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Break & Learn 3D</title>
+    <script src="../../js/global.js"></script>
+    <link rel="stylesheet" href="../../styles/global.css">
+    <link rel="stylesheet" href="game.css">
+    
+    <!-- 3D Libraries with working CDN links -->
+    <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+    <script src="https://unpkg.com/cannon@0.6.2/build/cannon.js"></script>
+
+</head>
+<body>
+    <nav class="app-nav">
+        <a href="../../index.html" class="nav-back">← Games</a>
+        <h1 class="nav-title">Break & Learn 3D</h1>
+        <button id="newObjectBtn" class="new-object-btn">New Object</button>
+    </nav>
+    
+    <main class="game-main">
+        <div class="game-container">
+            <div id="gameContainer"></div>
+            <div class="object-info" id="objectInfo">
+                <span id="objectLabel">Loading 3D world...</span>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="material-selector">
+                <button class="material-btn active" data-material="wood">🪵 Wood</button>
+                <button class="material-btn" data-material="glass">💎 Glass</button>
+                <button class="material-btn" data-material="ice">🧊 Ice</button>
+                <button class="material-btn" data-material="metal">⚙️ Metal</button>
+            </div>
+        </div>
+    </main>
+    
+    <script src="../../js/audio-system.js"></script>
+    <!-- Load 3D game files ONLY (no old game.js) -->
+    <script src="physics-manager.js"></script>
+    <script src="material-manager.js"></script>
+    <script src="object-factory.js"></script>
+    <script src="particle-system.js"></script>
+    <script src="game-3d.js"></script>
+</body>
+</html>

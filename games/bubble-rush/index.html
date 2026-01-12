@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-fullscreen">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <title>Bubble Rush - Pop the Numbers!</title>
+    
+    <!-- Matter.js Physics Engine -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    
+    <!-- Global Scripts -->
+    <script src="../../js/global.js"></script>
+    <script src="../../js/audio-system.js"></script>
+    
+    <!-- Game Scripts -->
+    <script src="physics-engine.js"></script>
+    <script src="bubble-manager.js"></script>
+    <script src="scoring-system.js"></script>
+    <script src="game.js"></script>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../../styles/global.css">
+    <link rel="stylesheet" href="game.css">
+</head>
+<body>
+    <!-- Main Game Container -->
+    <div class="game-container">
+        
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <button id="homeBtn" class="btn-icon">🏠</button>
+            
+            <div class="life-bar-container">
+                <span class="life-label">Life:</span>
+                <div class="life-bar">
+                    <div id="lifeBarFill" class="life-bar-fill"></div>
+                </div>
+            </div>
+            
+            <div class="score-display">
+                <span class="score-label">Score:</span>
+                <span id="scoreValue">0</span>
+            </div>
+        </div>
+        
+        <!-- Game Info Bar -->
+        <div class="info-bar">
+            <div class="target-display">
+                <span class="target-label">Pop:</span>
+                <span id="targetNumber" class="target-number">5</span>
+            </div>
+            
+            <div class="combo-display" id="comboDisplay">
+                <span class="combo-text">Combo: </span>
+                <span id="comboValue" class="combo-value">x1</span>
+            </div>
+            
+            <div class="goal-display">
+                <span class="goal-label">Goal:</span>
+                <span id="goalValue">10,000</span>
+            </div>
+        </div>
+        
+        <!-- Game Canvas -->
+        <div class="canvas-container">
+            <canvas id="gameCanvas"></canvas>
+            
+            <!-- Center Number (Physical Object) -->
+            <div id="centerNumber" class="center-number">
+                <span id="centerNumberText">5</span>
+            </div>
+        </div>
+        
+        <!-- Floating Text Animations -->
+        <div id="floatingTextContainer" class="floating-text-container"></div>
+        
+    </div>
+    
+    <!-- Win Overlay -->
+    <div id="winOverlay" class="overlay hidden">
+        <div class="overlay-content win-content">
+            <h1>🎉 YOU WIN! 🎉</h1>
+            <div class="final-stats">
+                <p class="final-score">Score: <span id="finalWinScore">0</span></p>
+                <p class="final-time">Time: <span id="finalWinTime">0:00</span></p>
+                <p class="final-accuracy">Accuracy: <span id="finalWinAccuracy">0%</span></p>
+            </div>
+            <button id="playAgainWinBtn" class="btn btn-primary btn-large">
+                Play Again!
+            </button>
+        </div>
+    </div>
+    
+    <!-- Game Over Overlay -->
+    <div id="gameOverOverlay" class="overlay hidden">
+        <div class="overlay-content gameover-content">
+            <h1>Game Over!</h1>
+            <div class="final-stats">
+                <p class="final-score">Score: <span id="finalLoseScore">0</span></p>
+                <p class="final-message">So close! Try again?</p>
+            </div>
+            <button id="playAgainLoseBtn" class="btn btn-primary btn-large">
+                Try Again!
+            </button>
+        </div>
+    </div>
+    
+    <!-- Start Overlay -->
+    <div id="startOverlay" class="overlay">
+        <div class="overlay-content start-content">
+            <h1>Bubble Rush!</h1>
+            <p class="game-instructions">Pop the correct numbers!</p>
+            <div class="game-rules">
+                <p>✓ Pop correct bubbles to gain points</p>
+                <p>✗ Wrong bubbles lose life</p>
+                <p>🎯 Reach 10,000 points to win!</p>
+            </div>
+            <button id="startBtn" class="btn btn-primary btn-large">
+                Start Game!
+            </button>
+        </div>
+    </div>
+    
+</body>
+</html>

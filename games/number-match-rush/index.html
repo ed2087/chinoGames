@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-fullscreen">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <title>Number Match Rush</title>
+    
+    <!-- Global Scripts -->
+    <script src="../../js/global.js"></script>
+    <script src="../../js/audio-system.js"></script>
+    
+    <!-- Game Scripts -->
+    <script src="number-spawner.js"></script>
+    <script src="drag-handler.js"></script>
+    <script src="game.js"></script>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../../styles/global.css">
+    <link rel="stylesheet" href="game.css">
+</head>
+<body>
+    <!-- Main Game Container -->
+    <div class="game-container">
+        
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <button id="homeBtn" class="btn-icon">🏠</button>
+            
+            <div class="timer-display">
+                <span class="timer-icon">⏱️</span>
+                <span id="timerValue">1:00</span>
+            </div>
+            
+            <div class="score-display">
+                <span class="score-label">Score:</span>
+                <span id="scoreValue">0</span>
+            </div>
+        </div>
+        
+        <!-- Main Game Area -->
+        <div class="game-area">
+            
+            <!-- Left Column - Boxes 1-5 -->
+            <div class="left-boxes">
+                <div class="target-box" data-number="1">
+                    <span class="box-number">1</span>
+                </div>
+                <div class="target-box" data-number="2">
+                    <span class="box-number">2</span>
+                </div>
+                <div class="target-box" data-number="3">
+                    <span class="box-number">3</span>
+                </div>
+                <div class="target-box" data-number="4">
+                    <span class="box-number">4</span>
+                </div>
+                <div class="target-box" data-number="5">
+                    <span class="box-number">5</span>
+                </div>
+            </div>
+            
+            <!-- Center Area - Spawning Numbers -->
+            <div id="centerArea" class="center-area">
+                <!-- Numbers spawn here dynamically -->
+            </div>
+            
+            <!-- Right Column - Boxes 6-10 -->
+            <div class="right-boxes">
+                <div class="target-box" data-number="6">
+                    <span class="box-number">6</span>
+                </div>
+                <div class="target-box" data-number="7">
+                    <span class="box-number">7</span>
+                </div>
+                <div class="target-box" data-number="8">
+                    <span class="box-number">8</span>
+                </div>
+                <div class="target-box" data-number="9">
+                    <span class="box-number">9</span>
+                </div>
+                <div class="target-box" data-number="10">
+                    <span class="box-number">10</span>
+                </div>
+            </div>
+            
+        </div>
+        
+    </div>
+    
+    <!-- Game Over Overlay -->
+    <div id="gameOverOverlay" class="game-over-overlay hidden">
+        <div class="game-over-content">
+            <h2>Time's Up!</h2>
+            <div class="final-score">
+                <p>You matched</p>
+                <div class="score-big" id="finalScore">0</div>
+                <p>numbers!</p>
+            </div>
+            <button id="playAgainBtn" class="btn btn-primary btn-large">
+                Play Again!
+            </button>
+        </div>
+    </div>
+    
+    <!-- Start Overlay -->
+    <div id="startOverlay" class="start-overlay">
+        <div class="start-content">
+            <h1>Number Match Rush</h1>
+            <p>Drag numbers to matching boxes!</p>
+            <p class="subtitle">You have 1 minute!</p>
+            <button id="startBtn" class="btn btn-primary btn-large">
+                Start Game!
+            </button>
+        </div>
+    </div>
+    
+</body>
+</html>

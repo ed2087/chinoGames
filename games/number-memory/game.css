@@ -1,0 +1,362 @@
+/* ============================================
+   NUMBER MEMORY MATCH - GAME STYLES
+   ============================================ */
+
+/* ============================================
+   CSS VARIABLES
+   ============================================ */
+:root {
+    --card-size: 150px;
+    --card-gap: 20px;
+    --bg-gradient-1: #E3F2FD;
+    --bg-gradient-2: #F3E5F5;
+}
+
+/* ============================================
+   RESET & BASE
+   ============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
+    background-attachment: fixed;
+    overflow: hidden;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* ============================================
+   MAIN CONTAINER
+   ============================================ */
+.game-container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ============================================
+   TOP BAR
+   ============================================ */
+.top-bar {
+    height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+}
+
+.btn-icon {
+    width: 50px;
+    height: 50px;
+    border: none;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    font-size: 28px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.btn-icon:active {
+    transform: scale(0.95);
+}
+
+.pairs-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 28px;
+    font-weight: 700;
+    color: #333;
+    background: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.pairs-label {
+    font-size: 20px;
+    opacity: 0.7;
+}
+
+.score-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    background: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.score-label {
+    font-size: 18px;
+    opacity: 0.7;
+}
+
+.star-icon {
+    font-size: 28px;
+}
+
+/* ============================================
+   GAME AREA
+   ============================================ */
+.game-area {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* ============================================
+   CARD GRID
+   ============================================ */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, var(--card-size));
+    grid-template-rows: repeat(2, var(--card-size));
+    gap: var(--card-gap);
+}
+
+/* ============================================
+   CARDS
+   ============================================ */
+.card {
+    width: var(--card-size);
+    height: var(--card-size);
+    position: relative;
+    cursor: pointer;
+    perspective: 1000px;
+}
+
+.card-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+.card.flipped .card-inner {
+    transform: rotateY(180deg);
+}
+
+.card.matched .card-inner {
+    transform: rotateY(180deg);
+}
+
+.card-face,
+.card-back {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    backface-visibility: hidden;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    border: 4px solid white;
+}
+
+/* Card Back (Face Down) */
+.card-back {
+    background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+}
+
+.card-back-content {
+    font-size: 80px;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Card Face (Face Up) */
+.card-face {
+    background: white;
+    transform: rotateY(180deg);
+}
+
+.card-number {
+    font-size: 100px;
+    font-weight: 900;
+    color: white;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Number Colors */
+.card[data-number="1"] .card-face { background: linear-gradient(135deg, #FF6B6B 0%, #FF8888 100%); }
+.card[data-number="2"] .card-face { background: linear-gradient(135deg, #FFA500 0%, #FFB830 100%); }
+.card[data-number="3"] .card-face { background: linear-gradient(135deg, #FFD93D 0%, #FFE066 100%); }
+.card[data-number="4"] .card-face { background: linear-gradient(135deg, #4CAF50 0%, #6BCF7F 100%); }
+.card[data-number="5"] .card-face { background: linear-gradient(135deg, #2196F3 0%, #42A5F5 100%); }
+.card[data-number="6"] .card-face { background: linear-gradient(135deg, #9C27B0 0%, #BA68C8 100%); }
+.card[data-number="7"] .card-face { background: linear-gradient(135deg, #E91E63 0%, #F06292 100%); }
+.card[data-number="8"] .card-face { background: linear-gradient(135deg, #795548 0%, #A1887F 100%); }
+.card[data-number="9"] .card-face { background: linear-gradient(135deg, #00BCD4 0%, #4DD0E1 100%); }
+.card[data-number="10"] .card-face { background: linear-gradient(135deg, #607D8B 0%, #90A4AE 100%); }
+
+/* Matched Cards */
+.card.matched {
+    pointer-events: none;
+}
+
+.card.matched .card-face {
+    animation: matchPulse 0.5s ease-in-out;
+    box-shadow: 0 0 30px rgba(76, 175, 80, 0.8);
+}
+
+@keyframes matchPulse {
+    0%, 100% {
+        transform: rotateY(180deg) scale(1);
+    }
+    50% {
+        transform: rotateY(180deg) scale(1.1);
+    }
+}
+
+/* Wrong Match Shake */
+.card.wrong {
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+/* ============================================
+   OVERLAYS
+   ============================================ */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(10px);
+}
+
+.overlay.hidden {
+    display: none;
+}
+
+.overlay-content {
+    background: white;
+    padding: 50px;
+    border-radius: 32px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    max-width: 500px;
+    margin: 20px;
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0) rotate(-180deg);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+.overlay-content h1 {
+    font-size: 48px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.game-instructions {
+    font-size: 24px;
+    color: #666;
+    margin: 20px 0;
+}
+
+.game-rules {
+    margin: 30px 0;
+    text-align: left;
+}
+
+.game-rules p {
+    font-size: 20px;
+    color: #666;
+    margin: 12px 0;
+    padding-left: 20px;
+}
+
+.win-message {
+    font-size: 28px;
+    color: #4CAF50;
+    margin: 20px 0;
+    font-weight: 600;
+}
+
+.final-score {
+    margin: 30px 0;
+}
+
+.final-score p {
+    font-size: 32px;
+    font-weight: 700;
+    color: #333;
+}
+
+.final-score span {
+    color: #4CAF50;
+    font-size: 48px;
+}
+
+.btn-large {
+    font-size: 28px;
+    padding: 20px 60px;
+    min-height: 70px;
+    margin-top: 20px;
+}
+
+/* ============================================
+   RESPONSIVE - iPad Pro
+   ============================================ */
+@media (min-width: 1024px) {
+    :root {
+        --card-size: 180px;
+        --card-gap: 30px;
+    }
+    
+    .card-number {
+        font-size: 120px;
+    }
+    
+    .card-back-content {
+        font-size: 100px;
+    }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+.hidden {
+    display: none !important;
+}

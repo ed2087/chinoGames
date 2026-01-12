@@ -1,0 +1,347 @@
+/* App-like design for Magic Canvas */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    touch-action: manipulation;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f0f0f0;
+    overflow: hidden;
+    height: 100vh;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Top bar - minimal and clean */
+.top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    height: 50px;
+    z-index: 100;
+}
+
+.back-btn, .clear-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 12px;
+    background: var(--primary-blue);
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.back-btn:hover, .clear-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+}
+
+.back-btn:active, .clear-btn:active {
+    transform: scale(0.95);
+}
+
+.clear-btn {
+    background: var(--primary-red);
+}
+
+.clear-btn:hover {
+    box-shadow: 0 4px 12px rgba(208, 2, 27, 0.3);
+}
+
+.top-bar h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0;
+}
+
+/* Canvas area - takes up most of the screen */
+.canvas-area {
+    flex: 1;
+    position: relative;
+    margin: 8px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+#magicCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: crosshair;
+    touch-action: none;
+}
+
+/* Floating sparkles */
+.floating-sparkles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.sparkle {
+    position: absolute;
+    font-size: 20px;
+    animation: sparkleFloat 2s ease-out forwards;
+    pointer-events: none;
+}
+
+@keyframes sparkleFloat {
+    0% {
+        opacity: 1;
+        transform: scale(0.5) rotate(0deg);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.2) rotate(180deg);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.8) translateY(-50px) rotate(360deg);
+    }
+}
+
+/* Bottom toolbar - compact and organized */
+.toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    height: 70px;
+    overflow-x: auto;
+    gap: 8px;
+}
+
+.tool-group, .color-group, .shape-group, .number-group {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+/* Tool buttons - compact and touch-friendly */
+.tool-btn {
+    width: 36px;
+    height: 36px;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    background: rgba(240, 240, 240, 0.8);
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.tool-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.tool-btn:active {
+    transform: scale(0.95);
+}
+
+.tool-btn.active {
+    border-color: var(--primary-blue);
+    background: rgba(74, 144, 226, 0.1);
+    transform: scale(1.05);
+}
+
+/* Color buttons */
+.color-btn {
+    width: 32px;
+    height: 32px;
+    border: 3px solid white;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.color-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.color-btn:active {
+    transform: scale(0.95);
+}
+
+.color-btn.active {
+    border-color: var(--primary-blue);
+    border-width: 4px;
+    transform: scale(1.15);
+}
+
+/* Number buttons */
+.number-group .tool-btn {
+    font-weight: bold;
+    font-size: 18px;
+    color: var(--text-dark);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .toolbar {
+        height: 60px;
+        padding: 6px;
+        gap: 6px;
+    }
+    
+    .tool-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+    }
+    
+    .color-btn {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .tool-group, .color-group, .shape-group, .number-group {
+        gap: 3px;
+    }
+}
+
+@media (max-width: 480px) {
+    .top-bar {
+        padding: 6px 12px;
+        height: 45px;
+    }
+    
+    .back-btn, .clear-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+    
+    .top-bar h1 {
+        font-size: 18px;
+    }
+    
+    .toolbar {
+        height: 55px;
+        padding: 4px;
+        gap: 4px;
+    }
+    
+    .tool-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 12px;
+    }
+    
+    .color-btn {
+        width: 26px;
+        height: 26px;
+    }
+    
+    .number-group .tool-btn {
+        font-size: 16px;
+    }
+}
+
+/* Landscape mode adjustments */
+@media (orientation: landscape) and (max-height: 500px) {
+    .top-bar {
+        height: 40px;
+        padding: 4px 12px;
+    }
+    
+    .back-btn, .clear-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+    }
+    
+    .top-bar h1 {
+        font-size: 16px;
+    }
+    
+    .toolbar {
+        height: 50px;
+        padding: 4px;
+    }
+    
+    .tool-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+    
+    .color-btn {
+        width: 24px;
+        height: 24px;
+    }
+}
+
+/* Touch feedback */
+.tool-btn:active, .color-btn:active, .back-btn:active, .clear-btn:active {
+    transition: none;
+}
+
+/* Hide scrollbars but keep functionality */
+.toolbar::-webkit-scrollbar {
+    display: none;
+}
+
+.toolbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Prevent text selection and context menus */
+.app-container * {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Loading state */
+.app-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    z-index: -1;
+}

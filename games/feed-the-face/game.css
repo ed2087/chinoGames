@@ -1,0 +1,597 @@
+/* ============================================
+   FEED THE FACE - GAME STYLES
+   Mobile-first, iPad optimized
+   ============================================ */
+
+/* ============================================
+   CSS VARIABLES
+   ============================================ */
+:root {
+    /* Face Colors */
+    --face-yellow: #FFD93D;
+    --face-orange: #FFB830;
+    --face-pink: #FF90BC;
+    --face-shadow: rgba(0, 0, 0, 0.15);
+    
+    /* Background */
+    --bg-gradient-1: #A8E6CF;
+    --bg-gradient-2: #FFD3B6;
+    
+    /* UI Colors */
+    --shelf-bg: rgba(255, 255, 255, 0.95);
+    --drop-zone-bg: rgba(255, 255, 255, 0.85);
+    --plate-bg: #FFF8E7;
+    --border-color: #FF90BC;
+    
+    /* Spacing */
+    --top-bar-height: 60px;
+    --food-shelf-height: 120px;
+    --drop-zone-height: 200px;
+}
+
+/* ============================================
+   RESET & BASE
+   ============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
+    background-attachment: fixed;
+    overflow: hidden;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    touch-action: none;
+}
+
+/* ============================================
+   MAIN CONTAINER
+   ============================================ */
+.game-container {
+    width: 100%;
+    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* ============================================
+   TOP BAR
+   ============================================ */
+.top-bar {
+    height: var(--top-bar-height);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+}
+
+.btn-icon {
+    width: 44px;
+    height: 44px;
+    border: none;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.btn-icon:active {
+    transform: scale(0.95);
+}
+
+.score-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 8px 16px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.score-label {
+    font-size: 16px;
+    opacity: 0.7;
+}
+
+.star-icon {
+    font-size: 24px;
+}
+
+/* ============================================
+   FACE SECTION - SIDE BY SIDE
+   ============================================ */
+.face-section {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    position: relative;
+    padding: 20px;
+}
+
+.face-container {
+    position: relative;
+    width: 350px;
+    height: 350px;
+    filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.15));
+    animation: breathe 3s ease-in-out infinite;
+}
+
+#faceCanvas {
+    width: 100%;
+    height: 100%;
+}
+
+@keyframes breathe {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+}
+
+/* Number Display - Beside face */
+.number-display {
+    margin-top: 0;
+    background: white;
+    padding: 20px 40px;
+    border-radius: 24px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#targetNumber {
+    font-size: 120px;
+    font-weight: 900;
+    color: var(--primary-blue);
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.1);
+    line-height: 1;
+}
+
+/* ============================================
+   FOOD SHELF - FIXED HEIGHT & SCROLLING
+   ============================================ */
+.food-section {
+    height: var(--food-shelf-height);
+    background: var(--shelf-bg);
+    border-top: 3px solid var(--border-color);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.food-shelf {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    gap: 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+.food-shelf::-webkit-scrollbar {
+    display: none;
+}
+
+.food-item {
+    min-width: 70px;
+    width: 70px;
+    height: 70px;
+    background: white;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    cursor: grab;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+.food-item img {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+.food-item:active {
+    cursor: grabbing;
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.food-item.dragging {
+    opacity: 0.8;
+    transform: scale(1.15) rotate(5deg);
+    z-index: 1000;
+}
+
+/* ============================================
+   DROP ZONE / PLATE - BIGGER & CENTERED
+   ============================================ */
+.drop-zone-section {
+    height: var(--drop-zone-height);
+    background: var(--drop-zone-bg);
+    border-top: 3px solid var(--border-color);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.drop-zone {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.drop-zone-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.plate {
+    width: 500px;
+    height: 80px;
+    background: var(--plate-bg);
+    border: 4px solid #FFB830;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1),
+                0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.plate-items {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    padding: 8px;
+    max-width: 480px;
+}
+
+.plate-item {
+    width: 35px;
+    height: 35px;
+    animation: popIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    flex-shrink: 0;
+}
+
+.plate-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0) rotate(0deg);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2) rotate(10deg);
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+.counter {
+    font-size: 36px;
+    font-weight: 900;
+    color: #333;
+    background: white;
+    padding: 8px 28px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+#currentCount {
+    color: var(--primary-green);
+}
+
+.separator {
+    color: #999;
+    margin: 0 4px;
+}
+
+#targetCount {
+    color: var(--primary-blue);
+}
+
+/* ============================================
+   CELEBRATION OVERLAY
+   ============================================ */
+.celebration-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(5px);
+}
+
+.celebration-overlay.hidden {
+    display: none;
+}
+
+.celebration-content {
+    text-align: center;
+    animation: celebrationBounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes celebrationBounce {
+    0% {
+        transform: scale(0) rotate(-180deg);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2) rotate(10deg);
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+.celebration-message {
+    font-size: 120px;
+    margin-bottom: 20px;
+    animation: spin 0.8s ease-in-out;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg) scale(0.5); }
+    50% { transform: rotate(180deg) scale(1.2); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+
+.btn-large {
+    font-size: 24px;
+    padding: 16px 48px;
+    min-height: 60px;
+}
+
+/* ============================================
+   LOADING SCREEN
+   ============================================ */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    transition: opacity 0.5s;
+}
+
+.loading-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loading-content {
+    text-align: center;
+}
+
+.loading-spinner {
+    font-size: 80px;
+    animation: bounce 1s ease-in-out infinite;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+.loading-content p {
+    font-size: 20px;
+    color: #333;
+    margin-top: 20px;
+    font-weight: 600;
+}
+
+/* ============================================
+   RESPONSIVE - iPad Pro (1024px+)
+   ============================================ */
+@media (min-width: 1024px) {
+    .face-section {
+        gap: 60px;
+    }
+    
+    .face-container {
+        width: 500px;
+        height: 500px;
+    }
+    
+    #targetNumber {
+        font-size: 180px;
+    }
+    
+    .number-display {
+        padding: 30px 60px;
+    }
+    
+    .food-item {
+        min-width: 90px;
+        width: 90px;
+        height: 90px;
+    }
+    
+    .food-item img {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .plate {
+        width: 600px;
+        height: 100px;
+    }
+    
+    .plate-item {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .counter {
+        font-size: 48px;
+    }
+    
+    .btn-icon {
+        width: 56px;
+        height: 56px;
+        font-size: 28px;
+    }
+    
+    .score-display {
+        font-size: 24px;
+        padding: 12px 24px;
+    }
+}
+
+/* ============================================
+   RESPONSIVE - iPad Mini (768px - 1023px)
+   ============================================ */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .face-section {
+        gap: 50px;
+    }
+    
+    .face-container {
+        width: 380px;
+        height: 380px;
+    }
+    
+    #targetNumber {
+        font-size: 140px;
+    }
+    
+    .number-display {
+        padding: 24px 48px;
+    }
+    
+    .food-item {
+        min-width: 80px;
+        width: 80px;
+        height: 80px;
+    }
+    
+    .food-item img {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .plate {
+        width: 540px;
+        height: 90px;
+    }
+    
+    .plate-item {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .counter {
+        font-size: 40px;
+    }
+}
+
+/* ============================================
+   RESPONSIVE - Small screens (portrait)
+   ============================================ */
+@media (max-width: 767px) {
+    .face-section {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .face-container {
+        width: 280px;
+        height: 280px;
+    }
+    
+    #targetNumber {
+        font-size: 80px;
+    }
+    
+    .number-display {
+        padding: 16px 32px;
+    }
+    
+    .plate {
+        width: 90%;
+        max-width: 400px;
+    }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+.hidden {
+    display: none !important;
+}
+
+.no-pointer-events {
+    pointer-events: none;
+}
+
+.pulse {
+    animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}

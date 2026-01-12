@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Animal Builder</title>
+    <script src="../../js/global.js"></script>
+    <link rel="stylesheet" href="../../styles/global.css">
+    <link rel="stylesheet" href="game.css">
+</head>
+<body>
+    <nav class="app-nav">
+        <a href="../../index.html" class="nav-back">← Games</a>
+        <h1 class="nav-title">Animal Builder</h1>
+        <div class="nav-spacer"></div>
+    </nav>
+    
+    <main class="game-main">
+        <canvas id="gameCanvas"></canvas>
+        
+        <!-- Shape Palette -->
+        <div class="shape-palette" id="shapePalette">
+            <h3 class="palette-title">Drag!</h3>
+            <div class="palette-shapes" id="paletteShapes">
+                <!-- Shapes will be added dynamically -->
+            </div>
+        </div>
+        
+        <!-- Animal Selection -->
+        <div class="animal-selector" id="animalSelector">
+            <h3 class="selector-title">Choose Animal:</h3>
+            <div class="animal-options" id="animalOptions">
+                <!-- Animal buttons will be added dynamically -->
+            </div>
+        </div>
+        
+        <!-- Progress Display -->
+        <div class="progress-display" id="progressDisplay">
+            <div class="progress-animal" id="progressAnimal">🐦</div>
+            <div class="progress-text" id="progressText">Let's build a Bird!</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Fireworks Container -->
+    <div class="fireworks-container" id="fireworksContainer"></div>
+    
+    <!-- Explosion Particles Container -->
+    <div class="explosion-container" id="explosionContainer"></div>
+    
+    <!-- IMPORTANT: Load dependencies in order -->
+    <script src="../../js/audio-system.js"></script>
+    <script src="animal-data.js"></script>
+    <script src="animal-engine.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

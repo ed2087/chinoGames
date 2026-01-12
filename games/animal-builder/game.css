@@ -1,0 +1,351 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #a8e6cf 0%, #88d8a3 100%);
+    overflow: hidden;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+
+.app-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    min-height: 60px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.game-main {
+    height: calc(100vh - 60px);
+    position: relative;
+    display: flex;
+}
+
+#gameCanvas {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    margin: 10px;
+    cursor: default;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    transition: cursor 0.2s ease;
+}
+
+/* Shape Palette */
+.shape-palette {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 120px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 15px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    z-index: 100;
+}
+
+.palette-shapes {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+}
+
+.palette-title {
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.palette-shape {
+    width: 80px;
+    height: 80px;
+    border: 3px solid #ddd;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    transition: all 0.2s ease;
+    user-select: none;
+    position: relative;
+}
+
+.palette-shape canvas {
+    width: 60px !important;
+    height: 60px !important;
+    pointer-events: none;
+}
+
+.palette-shape:hover {
+    transform: scale(1.05);
+    border-color: #3498db;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+
+.palette-shape:active {
+    transform: scale(0.95);
+}
+
+/* NEW: Selected shape indicator */
+.palette-shape.selected {
+    border: 5px solid #2ecc71;
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    box-shadow: 0 0 20px rgba(46, 204, 113, 0.6),
+                0 0 40px rgba(46, 204, 113, 0.4);
+    animation: selectedPulse 1s ease-in-out infinite;
+}
+
+@keyframes selectedPulse {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(46, 204, 113, 0.6),
+                    0 0 40px rgba(46, 204, 113, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(46, 204, 113, 0.8),
+                    0 0 60px rgba(46, 204, 113, 0.6);
+    }
+}
+
+.palette-shape.selected::after {
+    content: '✓';
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 30px;
+    height: 30px;
+    background: #2ecc71;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* Animal Selector */
+.animal-selector {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 200px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    z-index: 100;
+}
+
+.selector-title {
+    margin: 0 0 15px 0;
+    text-align: center;
+    color: #2c3e50;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.animal-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.animal-option {
+    padding: 12px;
+    background: #f8f9fa;
+    border: 3px solid #ddd;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.animal-option:hover {
+    background: #e3f2fd;
+    border-color: #3498db;
+    transform: translateY(-2px);
+}
+
+.animal-option.active {
+    background: #3498db;
+    color: white;
+    border-color: #2980b9;
+}
+
+/* Progress Display */
+.progress-display {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 20px 30px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    z-index: 100;
+    text-align: center;
+    min-width: 250px;
+}
+
+.progress-animal {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.progress-text {
+    font-size: 18px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background: #ecf0f1;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3498db, #2ecc71);
+    width: 0%;
+    transition: width 0.5s ease;
+    border-radius: 5px;
+}
+
+/* Fireworks */
+.fireworks-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 2000;
+}
+
+.firework {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    animation: fireworkExplode 1s ease-out forwards;
+}
+
+@keyframes fireworkExplode {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0;
+    }
+}
+
+/* Explosion Effects */
+.explosion-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1500;
+}
+
+.explosion-particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #e74c3c;
+    border-radius: 50%;
+    animation: explode 0.6s ease-out forwards;
+}
+
+@keyframes explode {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+/* Touch-friendly interactions */
+* {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    .shape-palette {
+        width: 100px;
+        padding: 10px;
+        right: 10px;
+        top: 10px;
+    }
+    
+    .palette-shape {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .palette-shape canvas {
+        width: 50px !important;
+        height: 50px !important;
+    }
+    
+    .animal-selector {
+        width: 160px;
+        padding: 15px;
+        left: 10px;
+        top: 10px;
+    }
+    
+    .progress-display {
+        bottom: 10px;
+        padding: 15px 20px;
+        min-width: 200px;
+    }
+}
+
+/* Animation classes */
+.shape-snap {
+    animation: snapEffect 0.3s ease-out;
+}
+
+@keyframes snapEffect {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.shape-wrong {
+    animation: wrongShake 0.5s ease-in-out;
+}
+
+@keyframes wrongShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}

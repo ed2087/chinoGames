@@ -1,0 +1,123 @@
+/* Base layout */
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #E3F2FD 0%, #F1F8E9 100%);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* Game container */
+.game-main {
+  flex: 1;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;   /* ensure it spans full width */
+  height: 100%;  /* ensure it spans full height */
+}
+
+#gameCanvas,
+#drawingCanvas,
+#backgroundCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+
+#backgroundCanvas {
+  z-index: 1; /* background + obstacles */
+}
+
+#drawingCanvas {
+  z-index: 2; /* path trails */
+  pointer-events: none;
+}
+
+#gameCanvas {
+  z-index: 3; /* animals, house, etc. always on top */
+  border: 3px solid #BBDEFB;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: crosshair;
+}
+
+/* UI overlay */
+.game-ui {
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.help-text {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #2E7D32;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  border: 2px solid #81C784;
+  margin-bottom: 10px;
+}
+
+/* Buttons */
+.btn {
+  pointer-events: all;
+  font-size: 18px;
+  font-weight: 600;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 140px;
+}
+
+.btn-primary {
+  background: #4CAF50;
+  color: #fff;
+  box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3);
+}
+
+.btn-primary:hover {
+  background: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+}
+
+/* Touch optimizations */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .help-text {
+    font-size: 18px;
+    margin: 0 10px 10px 10px;
+  }
+  .btn {
+    font-size: 16px;
+    padding: 10px 20px;
+  }
+}
