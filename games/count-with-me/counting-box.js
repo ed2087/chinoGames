@@ -25,7 +25,7 @@ class CountingBox {
     
     generateAllFoodItems() {
         const allFood = [];
-        for (let i = 1; i <= 50; i++) {
+        for (let i = 1; i <= 30; i++) {
             allFood.push(`food${i}.png`);
         }
         return allFood;
