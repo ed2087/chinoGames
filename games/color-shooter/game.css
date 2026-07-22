@@ -250,38 +250,35 @@ body {
 }
 
 
-/* Back Button */
-.back-button {
+/* Same look as the .home-btn used across every other game (defined here
+   too since this game doesn't load the shared styles/global.css). Always
+   visible - it's a direct child of <body>, not inside #gameUI. */
+.home-btn {
     position: fixed;
-    top: 28px;
-    left: 206px;
-    z-index: 200;
-    background: rgba(255, 255, 255, 0.95);
-    border: none;
-    padding: 12px 24px;
-    border-radius: 25px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #333;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    transition: all 0.2s ease;
-    pointer-events: all;
-    display: flex;
+    top: 20px;
+    left: 20px;
+    z-index: 500;
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    font-size: 22px;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.back-button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+.home-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
-.back-button:active {
-    transform: scale(0.95);
-}
-
-.back-button::before {
-    content: '←';
-    font-size: 24px;
+.home-btn:active {
+    transform: scale(0.92);
 }

@@ -48,6 +48,39 @@ body {
     padding: var(--spacing-md);
 }
 
+/* ============================================
+   SHARED HOME/BACK BUTTON - used by every game
+   A round icon button (not text) since younger
+   kids who can't read yet still recognize it.
+   Always a real <a href> so it works without JS.
+   ============================================ */
+.home-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: var(--shadow-soft);
+    font-size: 22px;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.home-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-hover);
+}
+
+.home-btn:active {
+    transform: scale(0.92);
+}
+
 /* Common button styles for all games */
 .btn {
     padding: var(--spacing-sm) var(--spacing-md);

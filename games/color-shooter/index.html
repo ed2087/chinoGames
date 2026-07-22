@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="game.css">
 </head>
 <body>
+    <!-- Always visible, regardless of start screen / in-game state -->
+    <a href="../../index.html" class="home-btn" aria-label="Home">🏠</a>
+
     <!-- Start Screen -->
     <div id="startScreen">
         <h1>🎯 SHAPE BLASTER ACADEMY 🎯</h1>
@@ -19,9 +22,6 @@
 
     <!-- Game UI -->
     <div id="gameUI" style="display: none;">
-        <!-- Back Button -->
-        <button class="back-button" onclick="window.location.href='/'">Home</button>
-        
         <!-- Score and Level Display -->
         <div class="ui-top">
             <div class="score">Score: <span id="score">0</span></div>
