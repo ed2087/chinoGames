@@ -7,13 +7,14 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-fullscreen">
     <meta name="mobile-web-app-capable" content="yes">
     
-    <title>Number Memory Match</title>
-    
+    <title>Pokemon Memory Match</title>
+
     <!-- Global Scripts -->
     <script src="../../js/global.js"></script>
     <script src="../../js/audio-system.js"></script>
-    
+
     <!-- Game Scripts -->
+    <script src="pokemon-source.js"></script>
     <script src="card-manager.js"></script>
     <script src="game.js"></script>
     
@@ -30,12 +31,11 @@
             <button id="homeBtn" class="btn-icon">🏠</button>
             
             <div class="pairs-display">
-                <span class="pairs-label">Pairs:</span>
+                <span class="pairs-icon">🧩</span>
                 <span id="pairsValue">0/3</span>
             </div>
-            
+
             <div class="score-display">
-                <span class="score-label">Stars:</span>
                 <span id="scoreValue">0</span>
                 <span class="star-icon">⭐</span>
             </div>
@@ -70,11 +70,11 @@
     <!-- Start Overlay -->
     <div id="startOverlay" class="overlay">
         <div class="overlay-content">
-            <h1>Number Memory!</h1>
-            <p class="game-instructions">Match the pairs of numbers!</p>
+            <h1>Pokemon Memory Match!</h1>
+            <p class="game-instructions">Match the pairs of Pokemon!</p>
             <div class="game-rules">
                 <p>🃏 Flip 2 cards</p>
-                <p>🎯 Find matching numbers</p>
+                <p>🎯 Find matching Pokemon</p>
                 <p>⭐ Match all 3 pairs!</p>
             </div>
             <button id="startBtn" class="btn btn-primary btn-large">

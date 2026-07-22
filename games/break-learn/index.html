@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Break & Learn 3D</title>
+    <title>Poke Ball Break & Learn 3D</title>
     <script src="../../js/global.js"></script>
     <link rel="stylesheet" href="../../styles/global.css">
     <link rel="stylesheet" href="game.css">
@@ -16,8 +16,8 @@
 <body>
     <nav class="app-nav">
         <a href="../../index.html" class="nav-back">← Games</a>
-        <h1 class="nav-title">Break & Learn 3D</h1>
-        <button id="newObjectBtn" class="new-object-btn">New Object</button>
+        <h1 class="nav-title">Poke Ball Break & Learn</h1>
+        <button id="newObjectBtn" class="new-object-btn">New Poke Ball</button>
     </nav>
     
     <main class="game-main">
@@ -30,16 +30,17 @@
         
         <div class="controls">
             <div class="material-selector">
-                <button class="material-btn active" data-material="wood">🪵 Wood</button>
-                <button class="material-btn" data-material="glass">💎 Glass</button>
-                <button class="material-btn" data-material="ice">🧊 Ice</button>
-                <button class="material-btn" data-material="metal">⚙️ Metal</button>
+                <button class="material-btn active" data-material="pokeball">🔴 Poke Ball</button>
+                <button class="material-btn" data-material="greatball">🔵 Great Ball</button>
+                <button class="material-btn" data-material="ultraball">⚫ Ultra Ball</button>
+                <button class="material-btn" data-material="masterball">🟣 Master Ball</button>
             </div>
         </div>
     </main>
     
     <script src="../../js/audio-system.js"></script>
     <!-- Load 3D game files ONLY (no old game.js) -->
+    <script src="pokemon-source.js"></script>
     <script src="physics-manager.js"></script>
     <script src="material-manager.js"></script>
     <script src="object-factory.js"></script>

@@ -6,8 +6,10 @@
    CSS VARIABLES
    ============================================ */
 :root {
-    --card-size: 150px;
-    --card-gap: 20px;
+    /* Cards are the main focus - scale generously with the viewport,
+       capped so they don't get absurd on huge screens. */
+    --card-size: clamp(120px, min(24vw, 30vh), 260px);
+    --card-gap: clamp(12px, 3vw, 24px);
     --bg-gradient-1: #E3F2FD;
     --bg-gradient-2: #F3E5F5;
 }
@@ -46,70 +48,53 @@ body {
    TOP BAR
    ============================================ */
 .top-bar {
-    height: 70px;
+    height: 44px;
+    flex-shrink: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 20px;
+    padding: 0 14px;
     background: rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(10px);
     z-index: 100;
 }
 
 .btn-icon {
-    width: 50px;
-    height: 50px;
+    width: 32px;
+    height: 32px;
     border: none;
     background: rgba(255, 255, 255, 0.9);
-    border-radius: 12px;
-    font-size: 28px;
+    border-radius: 9px;
+    font-size: 17px;
     cursor: pointer;
     transition: transform 0.2s;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .btn-icon:active {
     transform: scale(0.95);
 }
 
-.pairs-display {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 28px;
-    font-weight: 700;
-    color: #333;
-    background: white;
-    padding: 10px 20px;
-    border-radius: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.pairs-label {
-    font-size: 20px;
-    opacity: 0.7;
-}
-
+.pairs-display,
 .score-display {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 24px;
+    gap: 5px;
+    font-size: 16px;
     font-weight: 700;
     color: #333;
     background: white;
-    padding: 10px 20px;
-    border-radius: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 5px 12px;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.score-label {
-    font-size: 18px;
-    opacity: 0.7;
+.pairs-icon {
+    font-size: 15px;
 }
 
 .star-icon {
-    font-size: 28px;
+    font-size: 16px;
 }
 
 /* ============================================
@@ -117,10 +102,11 @@ body {
    ============================================ */
 .game-area {
     flex: 1;
+    min-height: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 10px;
 }
 
 /* ============================================
@@ -166,23 +152,54 @@ body {
     height: 100%;
     position: absolute;
     backface-visibility: hidden;
-    border-radius: 16px;
+    border-radius: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-    border: 4px solid white;
+    /* Layered shadow gives the card a thick, physical feel instead of a flat tile */
+    box-shadow:
+        0 2px 0 rgba(0, 0, 0, 0.12),
+        0 5px 0 rgba(0, 0, 0, 0.08),
+        0 14px 26px rgba(0, 0, 0, 0.28);
+    border: 5px solid white;
+}
+
+.card:not(.flipped):not(.matched):active .card-inner {
+    transform: scale(0.95);
 }
 
 /* Card Back (Face Down) */
 .card-back {
-    background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+    background: linear-gradient(160deg, #4A90E2 0%, #2f5fa0 100%);
 }
 
+/* CSS-drawn Poke Ball instead of a plain "?" */
 .card-back-content {
-    font-size: 80px;
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    width: 52%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: linear-gradient(
+        to bottom,
+        #ee1515 0%, #ee1515 46%,
+        #1d1d1d 46%, #1d1d1d 54%,
+        #f5f5f5 54%, #f5f5f5 100%
+    );
+    border: 4px solid #1d1d1d;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+    position: relative;
+}
+
+.card-back-content::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 32%;
+    height: 32%;
+    background: #f5f5f5;
+    border: 4px solid #1d1d1d;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
 }
 
 /* Card Face (Face Up) */
@@ -198,17 +215,22 @@ body {
     text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
 }
 
-/* Number Colors */
-.card[data-number="1"] .card-face { background: linear-gradient(135deg, #FF6B6B 0%, #FF8888 100%); }
-.card[data-number="2"] .card-face { background: linear-gradient(135deg, #FFA500 0%, #FFB830 100%); }
-.card[data-number="3"] .card-face { background: linear-gradient(135deg, #FFD93D 0%, #FFE066 100%); }
-.card[data-number="4"] .card-face { background: linear-gradient(135deg, #4CAF50 0%, #6BCF7F 100%); }
-.card[data-number="5"] .card-face { background: linear-gradient(135deg, #2196F3 0%, #42A5F5 100%); }
-.card[data-number="6"] .card-face { background: linear-gradient(135deg, #9C27B0 0%, #BA68C8 100%); }
-.card[data-number="7"] .card-face { background: linear-gradient(135deg, #E91E63 0%, #F06292 100%); }
-.card[data-number="8"] .card-face { background: linear-gradient(135deg, #795548 0%, #A1887F 100%); }
-.card[data-number="9"] .card-face { background: linear-gradient(135deg, #00BCD4 0%, #4DD0E1 100%); }
-.card[data-number="10"] .card-face { background: linear-gradient(135deg, #607D8B 0%, #90A4AE 100%); }
+.card-pokemon-img {
+    width: 75%;
+    height: 75%;
+    object-fit: contain;
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.25));
+    pointer-events: none;
+}
+
+/* Card face colors - rotate by card position, work for both Pokemon
+   cards and the classic number fallback */
+.card-face-color-0 { background: linear-gradient(135deg, #FF6B6B 0%, #FF8888 100%); }
+.card-face-color-1 { background: linear-gradient(135deg, #FFA500 0%, #FFB830 100%); }
+.card-face-color-2 { background: linear-gradient(135deg, #4CAF50 0%, #6BCF7F 100%); }
+.card-face-color-3 { background: linear-gradient(135deg, #2196F3 0%, #42A5F5 100%); }
+.card-face-color-4 { background: linear-gradient(135deg, #9C27B0 0%, #BA68C8 100%); }
+.card-face-color-5 { background: linear-gradient(135deg, #00BCD4 0%, #4DD0E1 100%); }
 
 /* Matched Cards */
 .card.matched {
@@ -340,17 +362,8 @@ body {
    RESPONSIVE - iPad Pro
    ============================================ */
 @media (min-width: 1024px) {
-    :root {
-        --card-size: 180px;
-        --card-gap: 30px;
-    }
-    
     .card-number {
         font-size: 120px;
-    }
-    
-    .card-back-content {
-        font-size: 100px;
     }
 }
 

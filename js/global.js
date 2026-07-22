@@ -2,6 +2,21 @@
 // GLOBAL FULLSCREEN & MOBILE UTILITIES
 // ==========================================
 
+// This script is loaded from different depths (the hub uses "js/global.js",
+// game pages use "../../js/global.js"), and hardcoding "/icons/..." breaks
+// the moment the site is hosted at a subpath (e.g. GitHub Pages project
+// sites like username.github.io/repo-name/). Deriving the base path from
+// wherever this very script was actually loaded from works at any depth
+// and at any hosting root.
+const SITE_BASE_PATH = (function resolveSiteBasePath() {
+    const scriptEl = document.currentScript || Array.from(document.getElementsByTagName('script'))
+        .find(s => s.src && s.src.indexOf('js/global.js') !== -1);
+    if (scriptEl && scriptEl.src) {
+        return scriptEl.src.replace(/js\/global\.js.*$/, '');
+    }
+    return '/';
+})();
+
 class GlobalUtils {
     constructor() {
         this.isFullscreen = false;
@@ -736,7 +751,7 @@ class GlobalUtils {
             banner.id = 'installBanner';
             banner.innerHTML = `
                 <div class="banner-content">
-                    <img src="/icons/icon-192.png" alt="Chino's Games" class="banner-icon">
+                    <img src="${SITE_BASE_PATH}icons/icon-192.png" alt="Chino's Games" class="banner-icon">
                     <p>Install <strong>Chino's Games</strong> for fullscreen fun!</p>
                     <button id="installBtn">Install</button>
                     <button id="dismissBtn">Later</button>
@@ -810,8 +825,8 @@ if (document.readyState === 'loading') {
 // PWA SERVICE WORKER REGISTRATION
 // ==========================================
 // Only register service worker from the main hub (not from game pages)
-if ('serviceWorker' in navigator && window.location.pathname === '/' || window.location.pathname.endsWith('index.html')) {
-    navigator.serviceWorker.register('/sw.js')
+if ('serviceWorker' in navigator && (window.location.pathname === '/' || window.location.pathname.endsWith('index.html'))) {
+    navigator.serviceWorker.register(SITE_BASE_PATH + 'sw.js')
         .then(() => console.log('Service Worker registered'))
         .catch(err => console.error('Service Worker registration failed:', err));
 }

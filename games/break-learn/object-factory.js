@@ -111,6 +111,53 @@ class ObjectFactory {
         };
     }
     
+    createPokeball(material, size = 2.2) {
+        const materialProps = this.materialManager.getMaterialProperties(material);
+        const threeMaterial = this.materialManager.getThreeMaterial(material);
+        const physicsMaterial = this.materialManager.getPhysicsMaterial(material);
+
+        const geometry = new THREE.SphereGeometry(size / 2, 24, 18);
+        const shape = new CANNON.Sphere(size / 2);
+
+        const mesh = new THREE.Mesh(geometry, threeMaterial.clone());
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+
+        const mass = this.calculateMass(materialProps.density, size);
+        const body = new CANNON.Body({
+            mass: mass,
+            material: physicsMaterial
+        });
+        body.addShape(shape);
+
+        const spawnHeight = 8;
+        body.position.set(
+            (Math.random() - 0.5) * 2,
+            spawnHeight,
+            (Math.random() - 0.5) * 2
+        );
+
+        body.angularVelocity.set(
+            (Math.random() - 0.5) * 3,
+            (Math.random() - 0.5) * 3,
+            (Math.random() - 0.5) * 3
+        );
+
+        this.scene.add(mesh);
+        this.physicsManager.addBody(body);
+
+        return {
+            mesh,
+            body,
+            material: material,
+            hitPoints: materialProps.hitPoints,
+            maxHitPoints: materialProps.hitPoints,
+            type: 'pokeball',
+            name: materialProps.label,
+            size: size
+        };
+    }
+
     createNumberObject(number, material, size = 2.5) {
         if (this.font) {
             return this.create3DText(number.toString(), material, size, 'number');

@@ -9,7 +9,8 @@ class SimpleAudioSystem {
         this.synth = null;
         this.selectedVoice = null;
         this.voicesLoaded = false;
-        
+        this.audioContext = null;
+
         this.init();
     }
     
@@ -205,9 +206,87 @@ class SimpleAudioSystem {
     }
     
     /* ============================================
+       SPEAK COLOR / SHAPE
+       Thin wrappers so games can announce a color or
+       shape name without needing custom phrasing.
+       ============================================ */
+
+    speakColor(colorName) {
+        this.speak(colorName, { rate: 0.8, pitch: 1.15 });
+    }
+
+    speakShape(shapeName) {
+        this.speak(shapeName, { rate: 0.8, pitch: 1.1 });
+    }
+
+    /* ============================================
+       SOUND EFFECTS
+       Short synthesized tones (no audio files needed)
+       for taps, celebrations, etc.
+       ============================================ */
+
+    getAudioContext() {
+        if (!this.audioContext) {
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContextClass) return null;
+            this.audioContext = new AudioContextClass();
+        }
+        if (this.audioContext.state === 'suspended') {
+            this.audioContext.resume().catch(() => {});
+        }
+        return this.audioContext;
+    }
+
+    playTone(frequency, startTime, duration, ctx, type = 'sine', peakGain = 0.25) {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = type;
+        osc.frequency.setValueAtTime(frequency, startTime);
+
+        gain.gain.setValueAtTime(0, startTime);
+        gain.gain.linearRampToValueAtTime(peakGain, startTime + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(startTime);
+        osc.stop(startTime + duration + 0.02);
+    }
+
+    playSoundEffect(effectName) {
+        const ctx = this.getAudioContext();
+        if (!ctx) return;
+
+        const now = ctx.currentTime;
+
+        // Each effect is a tiny sequence of tones (frequency, delay, duration)
+        const effects = {
+            pop:        [[600, 0, 0.08]],
+            chime:      [[880, 0, 0.15], [1318.5, 0.08, 0.2]],
+            success:    [[659.25, 0, 0.12], [880, 0.1, 0.2]],
+            celebration:[[523.25, 0, 0.12], [659.25, 0.1, 0.12], [783.99, 0.2, 0.25]],
+            sparkle:    [[1046.5, 0, 0.08], [1318.5, 0.06, 0.08], [1568, 0.12, 0.15]],
+            pickup:     [[440, 0, 0.1]],
+            drop:       [[330, 0, 0.12]],
+            crash:      [[180, 0, 0.25]],
+            tick:       [[1000, 0, 0.04]],
+            levelup:    [[523.25, 0, 0.1], [659.25, 0.09, 0.1], [783.99, 0.18, 0.1], [1046.5, 0.27, 0.2]],
+            reset:      [[400, 0, 0.15], [300, 0.1, 0.15]]
+        };
+
+        const sequence = effects[effectName] || effects.pop;
+
+        sequence.forEach(([frequency, delay, duration]) => {
+            this.playTone(frequency, now + delay, duration, ctx, effectName === 'crash' ? 'sawtooth' : 'sine');
+        });
+    }
+
+    /* ============================================
        STOP
        ============================================ */
-    
+
     stop() {
         if (this.synth) {
             this.synth.cancel();

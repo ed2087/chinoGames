@@ -19,12 +19,20 @@ body {
 
 .game-main {
     height: calc(100vh - 60px);
+    height: calc(100dvh - 60px);
     position: relative;
     display: flex;
+    align-items: stretch;
 }
 
+/* The animal selector, canvas, and shape palette are real flex siblings
+   (not position:absolute overlays) so the canvas only ever fills the
+   actual visible gap between them - otherwise the canvas spans full width
+   underneath the panels and its centered animal drawing looks off-center. */
 #gameCanvas {
+    order: 2;
     flex: 1;
+    min-width: 0;
     background: rgba(255, 255, 255, 0.2);
     border-radius: 20px;
     margin: 10px;
@@ -36,10 +44,13 @@ body {
 
 /* Shape Palette */
 .shape-palette {
-    position: absolute;
-    top: 20px;
-    right: 20px;
+    order: 3;
+    flex-shrink: 0;
+    align-self: flex-start;
+    margin: 20px 20px 20px 0;
     width: 120px;
+    max-height: calc(100% - 40px);
+    overflow-y: auto;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
     border-radius: 20px;
@@ -57,7 +68,8 @@ body {
 
 .palette-title {
     margin-bottom: 10px;
-    font-size: 1.5rem;
+    font-size: 1rem;
+    line-height: 1.25;
     text-align: center;
 }
 
@@ -132,10 +144,13 @@ body {
 
 /* Animal Selector */
 .animal-selector {
-    position: absolute;
-    top: 20px;
-    left: 20px;
+    order: 1;
+    flex-shrink: 0;
+    align-self: flex-start;
+    margin: 20px 0 20px 20px;
     width: 200px;
+    max-height: calc(100% - 40px);
+    overflow-y: auto;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
     border-radius: 20px;
@@ -299,29 +314,34 @@ body {
 /* Mobile optimizations */
 @media (max-width: 768px) {
     .shape-palette {
-        width: 100px;
+        width: 90px;
         padding: 10px;
-        right: 10px;
-        top: 10px;
+        margin: 10px 10px 10px 0;
+        max-height: calc(100% - 20px);
     }
-    
+
     .palette-shape {
-        width: 70px;
-        height: 70px;
+        width: 60px;
+        height: 60px;
     }
-    
+
     .palette-shape canvas {
-        width: 50px !important;
-        height: 50px !important;
+        width: 44px !important;
+        height: 44px !important;
     }
-    
+
     .animal-selector {
-        width: 160px;
-        padding: 15px;
-        left: 10px;
-        top: 10px;
+        width: 130px;
+        padding: 12px;
+        margin: 10px 0 10px 10px;
+        max-height: calc(100% - 20px);
     }
-    
+
+    .animal-option {
+        padding: 8px;
+        font-size: 13px;
+    }
+
     .progress-display {
         bottom: 10px;
         padding: 15px 20px;

@@ -90,10 +90,10 @@ class ParticleSystem {
     createExplosion(position, materialType, intensity = 1.0) {
         const particleCount = Math.floor(50 * intensity);
         const colorMap = {
-            wood: [0.6, 0.4, 0.2],
-            glass: [0.8, 0.9, 1.0],
-            ice: [0.7, 0.9, 1.0],
-            metal: [0.7, 0.7, 0.7]
+            pokeball: [0.93, 0.08, 0.08],
+            greatball: [0.23, 0.51, 0.77],
+            ultraball: [0.96, 0.77, 0.09],
+            masterball: [0.56, 0.27, 0.68]
         };
         
         const baseColor = colorMap[materialType] || [1, 1, 1];

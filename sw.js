@@ -1,15 +1,23 @@
 // Service Worker for PWA functionality
-const CACHE_NAME = 'chinos-games-v1';
+//
+// CACHE_NAME: bump this (v1 -> v2 -> ...) whenever you deploy a change you
+// need existing installs to pick up cleanly - it forces the activate
+// handler below to drop the old cache instead of carrying it forward.
+const CACHE_NAME = 'chinos-games-v2';
+
+// Relative (no leading "/") so these resolve against this service worker's
+// own location instead of the domain root - required for GitHub Pages
+// project sites, which serve from a subpath like /repo-name/ rather than /.
 const urlsToCache = [
-    '/',
-    '/index.html',
-    '/styles/global.css',
-    '/styles/hub.css',
-    '/js/global.js',
-    '/js/audio-system.js',
-    '/icons/icon-192.png',
-    '/icons/icon-512.png',
-    '/manifest.json'
+    './',
+    './index.html',
+    './styles/global.css',
+    './styles/hub.css',
+    './js/global.js',
+    './js/audio-system.js',
+    './icons/icon-192.png',
+    './icons/icon-512.png',
+    './manifest.json'
 ];
 
 // Install event

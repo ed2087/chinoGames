@@ -99,12 +99,12 @@ class NumberMemoryGame {
         console.log('🔗 Setting up callbacks...');
         
         // Card manager callbacks
-        this.cardManager.onCardFlipped = (number) => {
-            this.onCardFlipped(number);
+        this.cardManager.onCardFlipped = (key, name, cryUrl) => {
+            this.onCardFlipped(key, name, cryUrl);
         };
-        
-        this.cardManager.onMatch = (number, matchedCount) => {
-            this.onMatch(number, matchedCount);
+
+        this.cardManager.onMatch = (key, matchedCount, name, cryUrl) => {
+            this.onMatch(key, matchedCount, name, cryUrl);
         };
         
         this.cardManager.onMismatch = (number1, number2) => {
@@ -123,7 +123,7 @@ class NumberMemoryGame {
         this.startBtn.addEventListener('click', () => {
             this.startGame();
         });
-        
+
         // Next round button
         this.nextRoundBtn.addEventListener('click', () => {
             this.nextRound();
@@ -139,63 +139,73 @@ class NumberMemoryGame {
        GAME FLOW
        ============================================ */
     
-    startGame() {
+    async startGame() {
         console.log('🎮 Starting game...');
-        
+
         // Hide start overlay
         this.startOverlay.classList.add('hidden');
-        
+
         // Reset state
         this.round = 1;
         this.score = 0;
         this.isPlaying = true;
-        
+
         // Update UI
         this.updateScore();
         this.updatePairs(0);
-        
+
         // Start round
-        this.startRound();
+        await this.startRound();
     }
-    
-    startRound() {
+
+    async startRound() {
         console.log(`🎯 Round ${this.round}`);
-        
-        // Get numbers for this round
-        const numbers = this.getNumbersForRound();
-        
-        console.log(`📋 Numbers: ${numbers.join(', ')}`);
-        
+
+        // Clear the board immediately so nothing from the previous round
+        // lingers while the next Pokemon are being fetched.
+        this.cardManager.clearCards();
+
+        const items = await this.getPokemonForRound();
+
+        console.log('📋 Cards for this round:', items);
+
         // Create cards
-        this.cardManager.createCards(numbers);
-        
-        // Speak intro
-        if (this.audioSystem) {
-            setTimeout(() => {
-                this.audioSystem.speak('Find the matching pairs!', {
-                    pitch: 1.3,
-                    rate: 0.8
-                });
-            }, 500);
-        }
+        this.cardManager.createCards(items);
+
+        // No round-start voice line - it just repeats every round. The
+        // cry-on-flip and name-on-match sounds are the only voice cues now.
     }
-    
+
+    // Pokemon are the primary mode. If PokeAPI is unreachable (offline, etc.)
+    // this quietly falls back to the original number cards so the game
+    // still works.
+    async getPokemonForRound() {
+        try {
+            const list = await PokemonSource.fetchRandomUnique(3);
+            if (list.length === 3) return list;
+            console.warn('Only got', list.length, 'Pokemon, falling back to numbers');
+        } catch (err) {
+            console.warn('Pokemon fetch failed, falling back to numbers:', err);
+        }
+        return this.getNumbersForRound();
+    }
+
     getNumbersForRound() {
         // Use predefined sets for first 6 rounds
         if (this.round <= this.numberSets.length) {
             return this.numberSets[this.round - 1];
         }
-        
+
         // After round 6, pick random 3 numbers from 1-10
         const available = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
         const selected = [];
-        
+
         for (let i = 0; i < 3; i++) {
             const randomIndex = Math.floor(Math.random() * available.length);
             selected.push(available[randomIndex]);
             available.splice(randomIndex, 1);
         }
-        
+
         return selected.sort((a, b) => a - b);
     }
     
@@ -203,49 +213,57 @@ class NumberMemoryGame {
        CARD CALLBACKS
        ============================================ */
     
-    onCardFlipped(number) {
-        console.log(`🔄 Card flipped: ${number}`);
-        
-        // Speak number
-        if (this.audioSystem) {
-            this.audioSystem.speakNumber(number);
+    // A 4-year-old flips cards fast - full sentences on every tap just get
+    // cut off and sound broken. Flips get a quick, non-speech cry instead;
+    // speech is saved for the one moment that deserves it: a match.
+    onCardFlipped(key, name, cryUrl) {
+        console.log(`🔄 Card flipped: ${name || key}`);
+
+        if (cryUrl) {
+            this.playCry(cryUrl);
+        } else if (this.audioSystem && !name) {
+            this.audioSystem.speakNumber(parseInt(key));
         }
     }
-    
-    onMatch(number, matchedCount) {
-        console.log(`✅ Match! Number: ${number}, Total: ${matchedCount}/3`);
-        
+
+    onMatch(key, matchedCount, name, cryUrl) {
+        console.log(`✅ Match! ${name || key}, Total: ${matchedCount}/${this.cardManager.totalPairs}`);
+
         // Update UI
         this.updatePairs(matchedCount);
-        
+
         // Add score
         this.score += 100;
         this.updateScore();
-        
-        // Speak celebration
+
+        if (cryUrl) {
+            this.playCry(cryUrl);
+        }
+
+        // Say the name - short, so it's over before the next flip could cut it off
         if (this.audioSystem) {
-            const numberWord = this.getNumberWord(number);
-            
+            const label = name ? this.capitalize(name) : this.getNumberWord(parseInt(key));
+
             setTimeout(() => {
-                this.audioSystem.speak(`Great! You found TWO ${numberWord}s!`, {
-                    pitch: 1.3,
-                    rate: 0.8
-                });
-            }, 600);
+                this.audioSystem.speak(label, { pitch: 1.3, rate: 0.9 });
+            }, 250);
         }
     }
-    
+
     onMismatch(number1, number2) {
         console.log(`❌ Mismatch: ${number1} vs ${number2}`);
-        
-        // Speak feedback
-        if (this.audioSystem) {
-            setTimeout(() => {
-                this.audioSystem.speak('Try again!', {
-                    pitch: 1.1,
-                    rate: 0.8
-                });
-            }, 600);
+        // No sound here on purpose - the card shake is enough feedback,
+        // and a 4-year-old tapping quickly doesn't need a voice line
+        // fighting with the next flip's cry.
+    }
+
+    playCry(cryUrl) {
+        try {
+            const audio = new Audio(cryUrl);
+            audio.volume = 0.8;
+            audio.play().catch(err => console.warn('Pokemon cry playback blocked:', err));
+        } catch (err) {
+            console.warn('Pokemon cry failed:', err);
         }
     }
     
@@ -269,7 +287,8 @@ class NumberMemoryGame {
        ============================================ */
     
     updatePairs(count) {
-        this.pairsValue.textContent = `${count}/3`;
+        const total = this.cardManager.totalPairs || 3;
+        this.pairsValue.textContent = `${count}/${total}`;
     }
     
     updateScore() {
@@ -294,30 +313,34 @@ class NumberMemoryGame {
         this.createConfetti();
     }
     
-    nextRound() {
+    async nextRound() {
         console.log('➡️ Next round...');
-        
+
         // Hide win overlay
         this.winOverlay.classList.add('hidden');
-        
+
         // Increment round
         this.round++;
-        
+
         // Reset pairs display
         this.updatePairs(0);
-        
+
         // Start new round
         this.isPlaying = true;
-        this.startRound();
+        await this.startRound();
     }
-    
+
     /* ============================================
        UTILITIES
        ============================================ */
-    
+
     getNumberWord(num) {
         const words = ['', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'TEN'];
         return words[num] || num.toString();
+    }
+
+    capitalize(text) {
+        return text.charAt(0).toUpperCase() + text.slice(1);
     }
     
     /* ============================================

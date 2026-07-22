@@ -118,6 +118,10 @@ class PathHomeGame {
         this.drawingEngine.onObstacleHit = (obstacle) => {
             this.onObstacleHit(obstacle);
         };
+
+        this.drawingEngine.onObstacleBlocked = () => {
+            this.onObstacleBlocked();
+        };
     }
     
     setupEventListeners() {
@@ -137,7 +141,7 @@ class PathHomeGame {
     }
     
     setupUI() {
-        this.updateHelpText("Draw any path to help me get home!");
+        this.updateHelpText("Start on me and draw a path to my home - avoid the rocks!");
         this.hideNextButton();
     }
     
@@ -156,7 +160,7 @@ class PathHomeGame {
         // Welcome message
         if (window.audioSystem?.isInitialized) {
             setTimeout(() => {
-                window.audioSystem.speak("Draw any path you want! Just help your friend get home!");
+                window.audioSystem.speak("Start drawing right on me, and draw a path all the way to my home. Watch out for rocks!");
             }, 1000);
         }
     }
@@ -257,7 +261,7 @@ class PathHomeGame {
         const animalName = this.currentLevel.animalType.charAt(0).toUpperCase() + this.currentLevel.animalType.slice(1);
         const homeType = this.currentAnimal.homeType;
         
-        this.updateHelpText(`Draw any path to help ${animalName} reach the ${homeType}!`);
+        this.updateHelpText(`Start on ${animalName} and draw a path to the ${homeType} - avoid the rocks!`);
     }
     
     announceLevel() {
@@ -267,7 +271,7 @@ class PathHomeGame {
             const animalName = this.currentLevel.animalType;
             const homeType = this.currentAnimal.homeType;
             
-            window.audioSystem.speak(`Help the ${animalName} get to the ${homeType}! Draw any path you like, just avoid the rocks!`);
+            window.audioSystem.speak(`Start drawing right on the ${animalName}, then draw a path all the way to the ${homeType}. Avoid the rocks!`);
         }, 1500);
     }
     
@@ -390,24 +394,36 @@ render() {
     
     onPathIncomplete(pathData) {
         console.log('📝 Path drawn but incomplete');
-        
+
+        this.updateHelpText("Start right on me and draw all the way to the house!");
+
         if (window.audioSystem?.isInitialized) {
-            window.audioSystem.speak("Good start! Try to reach the house!");
+            window.audioSystem.speak("Good try! Start right on me and draw all the way to the house.");
         }
     }
-    
+
     onObstacleHit(obstacle) {
         console.log('💥 Hit obstacle');
-        
+
         // Visual feedback
         this.particleGenerator.createFloatingBubbles(2);
-        
+
         // Audio feedback
         if (window.audioSystem?.isInitialized) {
             window.audioSystem.speak("Oops! Try to go around the rocks!");
         }
-        
+
         this.audioSynthesizer.playErrorSound();
+    }
+
+    onObstacleBlocked() {
+        console.log('🪨 Path blocked by a rock - attempt disqualified');
+
+        this.updateHelpText("That path hit a rock! Draw around it and try again.");
+
+        if (window.audioSystem?.isInitialized) {
+            window.audioSystem.speak("That path bumped into a rock! Try drawing around it.");
+        }
     }
     
     animateAnimalAlongPath(pathData) {

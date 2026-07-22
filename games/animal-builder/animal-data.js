@@ -4,7 +4,7 @@
 // ==========================================
 
 const AnimalData = {
-    // Bird Definition (Fixed & Larger)
+    // Bird Definition
     bird: {
         name: "Bird",
         emoji: "🐦",
@@ -26,7 +26,7 @@ const AnimalData = {
             {
                 id: "head",
                 type: "circle",
-                targetPosition: { x: 400, y: 200 },
+                targetPosition: { x: 360, y: 195 },
                 size: { radius: 60 },
                 snapRadius: 70,
                 finalColor: "#FFD93D",
@@ -37,7 +37,7 @@ const AnimalData = {
             {
                 id: "body",
                 type: "oval",
-                targetPosition: { x: 400, y: 340 },
+                targetPosition: { x: 360, y: 335 },
                 size: { width: 120, height: 160 },
                 snapRadius: 80,
                 finalColor: "#FFD93D",
@@ -48,7 +48,7 @@ const AnimalData = {
             {
                 id: "eye",
                 type: "circle",
-                targetPosition: { x: 380, y: 180 },
+                targetPosition: { x: 340, y: 175 },
                 size: { radius: 12 },
                 snapRadius: 25,
                 finalColor: "#2C3E50",
@@ -59,7 +59,7 @@ const AnimalData = {
             {
                 id: "beak",
                 type: "triangle",
-                targetPosition: { x: 340, y: 200 },
+                targetPosition: { x: 300, y: 195 },
                 size: { width: 40, height: 25 },
                 snapRadius: 40,
                 finalColor: "#FF6B35",
@@ -71,7 +71,7 @@ const AnimalData = {
             {
                 id: "wing",
                 type: "triangle",
-                targetPosition: { x: 350, y: 320 },
+                targetPosition: { x: 310, y: 315 },
                 size: { width: 70, height: 90 },
                 snapRadius: 60,
                 finalColor: "#F39C12",
@@ -83,10 +83,10 @@ const AnimalData = {
            {
                 id: "tail1",
                 type: "triangle",
-                targetPosition: { x: 480, y: 310 },
+                targetPosition: { x: 440, y: 305 },
                 size: { width: 50, height: 80 },
                 snapRadius: 60,
-                finalColor: "#8E44AD", // Dark purple for all 3
+                finalColor: "#8E44AD",
                 strokeColor: "#5B2C6F",
                 strokeWidth: 3,
                 zIndex: 1,
@@ -95,7 +95,7 @@ const AnimalData = {
             {
                 id: "tail2",
                 type: "triangle",
-                targetPosition: { x: 510, y: 340 },
+                targetPosition: { x: 470, y: 335 },
                 size: { width: 50, height: 80 },
                 snapRadius: 60,
                 finalColor: "#8E44AD",
@@ -106,8 +106,8 @@ const AnimalData = {
             },
             {
                 id: "tail3",
-                type: "triangle", // ❌ was diamond
-                targetPosition: { x: 540, y: 370 },
+                type: "triangle",
+                targetPosition: { x: 500, y: 365 },
                 size: { width: 50, height: 80 },
                 snapRadius: 60,
                 finalColor: "#8E44AD",
@@ -116,11 +116,10 @@ const AnimalData = {
                 zIndex: 1,
                 rotation: 90
             },
-
             {
                 id: "foot1",
                 type: "triangle",
-                targetPosition: { x: 370, y: 450 },
+                targetPosition: { x: 330, y: 445 },
                 size: { width: 30, height: 40 },
                 snapRadius: 35,
                 finalColor: "#FF6B35",
@@ -132,7 +131,7 @@ const AnimalData = {
             {
                 id: "foot2",
                 type: "triangle",
-                targetPosition: { x: 430, y: 450 },
+                targetPosition: { x: 390, y: 445 },
                 size: { width: 30, height: 40 },
                 snapRadius: 35,
                 finalColor: "#FF6B35",
@@ -144,7 +143,7 @@ const AnimalData = {
         ]
     },
 
-    // Panda Definition (Fixed with 4 legs!)
+    // Panda Definition
     panda: {
         name: "Panda",
         emoji: "🐼",
@@ -166,7 +165,7 @@ const AnimalData = {
             {
                 id: "head",
                 type: "circle",
-                targetPosition: { x: 400, y: 220 },
+                targetPosition: { x: 400, y: 263 },
                 size: { radius: 80 },
                 snapRadius: 90,
                 finalColor: "#FFFFFF",
@@ -177,7 +176,7 @@ const AnimalData = {
             {
                 id: "body",
                 type: "oval",
-                targetPosition: { x: 400, y: 380 },
+                targetPosition: { x: 400, y: 423 },
                 size: { width: 160, height: 200 },
                 snapRadius: 100,
                 finalColor: "#FFFFFF",
@@ -188,7 +187,7 @@ const AnimalData = {
             {
                 id: "ear1",
                 type: "circle",
-                targetPosition: { x: 340, y: 130 },
+                targetPosition: { x: 340, y: 173 },
                 size: { radius: 35 },
                 snapRadius: 50,
                 finalColor: "#2C3E50",
@@ -199,7 +198,7 @@ const AnimalData = {
             {
                 id: "ear2",
                 type: "circle",
-                targetPosition: { x: 460, y: 130 },
+                targetPosition: { x: 460, y: 173 },
                 size: { radius: 35 },
                 snapRadius: 50,
                 finalColor: "#2C3E50",
@@ -210,7 +209,7 @@ const AnimalData = {
             {
                 id: "eye1",
                 type: "circle",
-                targetPosition: { x: 370, y: 200 },
+                targetPosition: { x: 370, y: 243 },
                 size: { radius: 15 },
                 snapRadius: 30,
                 finalColor: "#2C3E50",
@@ -221,7 +220,7 @@ const AnimalData = {
             {
                 id: "eye2",
                 type: "circle",
-                targetPosition: { x: 430, y: 200 },
+                targetPosition: { x: 430, y: 243 },
                 size: { radius: 15 },
                 snapRadius: 30,
                 finalColor: "#2C3E50",
@@ -232,7 +231,7 @@ const AnimalData = {
             {
                 id: "nose",
                 type: "triangle",
-                targetPosition: { x: 400, y: 240 },
+                targetPosition: { x: 400, y: 283 },
                 size: { width: 16, height: 12 },
                 snapRadius: 25,
                 finalColor: "#2C3E50",
@@ -244,7 +243,7 @@ const AnimalData = {
             {
                 id: "leg1",
                 type: "oval",
-                targetPosition: { x: 340, y: 480 },
+                targetPosition: { x: 340, y: 523 },
                 size: { width: 50, height: 80 },
                 snapRadius: 50,
                 finalColor: "#2C3E50",
@@ -255,7 +254,7 @@ const AnimalData = {
             {
                 id: "leg2",
                 type: "oval",
-                targetPosition: { x: 460, y: 480 },
+                targetPosition: { x: 460, y: 523 },
                 size: { width: 50, height: 80 },
                 snapRadius: 50,
                 finalColor: "#2C3E50",
@@ -266,7 +265,7 @@ const AnimalData = {
             {
                 id: "arm1",
                 type: "oval",
-                targetPosition: { x: 320, y: 350 },
+                targetPosition: { x: 320, y: 393 },
                 size: { width: 45, height: 70 },
                 snapRadius: 50,
                 finalColor: "#2C3E50",
@@ -277,7 +276,7 @@ const AnimalData = {
             {
                 id: "arm2",
                 type: "oval",
-                targetPosition: { x: 480, y: 350 },
+                targetPosition: { x: 480, y: 393 },
                 size: { width: 45, height: 70 },
                 snapRadius: 50,
                 finalColor: "#2C3E50",
@@ -288,7 +287,7 @@ const AnimalData = {
         ]
     },
 
-    // Butterfly Definition (Fixed & Larger)
+    // Butterfly Definition
     butterfly: {
         name: "Butterfly",
         emoji: "🦋",
@@ -310,7 +309,7 @@ const AnimalData = {
             {
                 id: "body",
                 type: "oval",
-                targetPosition: { x: 450, y: 300 },
+                targetPosition: { x: 450, y: 315 },
                 size: { width: 45, height: 230 },
                 snapRadius: 40,
                 finalColor: "#8E44AD",
@@ -321,7 +320,7 @@ const AnimalData = {
             {
                 id: "head",
                 type: "circle",
-                targetPosition: { x: 450, y: 180 },
+                targetPosition: { x: 450, y: 195 },
                 size: { radius: 25 },
                 snapRadius: 30,
                 finalColor: "#2C3E50",
@@ -332,7 +331,7 @@ const AnimalData = {
             {
                 id: "topWing1",
                 type: "oval",
-                targetPosition: { x: 370, y: 260 },
+                targetPosition: { x: 370, y: 275 },
                 size: { width: 130, height: 90 },
                 snapRadius: 60,
                 finalColor: "#E74C3C",
@@ -343,7 +342,7 @@ const AnimalData = {
             {
                 id: "topWing2",
                 type: "oval",
-                targetPosition: { x: 530, y: 260 },
+                targetPosition: { x: 530, y: 275 },
                 size: { width: 130, height: 90 },
                 snapRadius: 60,
                 finalColor: "#E74C3C",
@@ -354,7 +353,7 @@ const AnimalData = {
             {
                 id: "bottomWing1",
                 type: "oval",
-                targetPosition: { x: 380, y: 340 },
+                targetPosition: { x: 380, y: 355 },
                 size: { width: 90, height: 70 },
                 snapRadius: 50,
                 finalColor: "#F39C12",
@@ -365,7 +364,7 @@ const AnimalData = {
             {
                 id: "bottomWing2",
                 type: "oval",
-                targetPosition: { x: 520, y: 340 },
+                targetPosition: { x: 520, y: 355 },
                 size: { width: 90, height: 70 },
                 snapRadius: 50,
                 finalColor: "#F39C12",
@@ -376,7 +375,7 @@ const AnimalData = {
             {
                 id: "spot1",
                 type: "circle",
-                targetPosition: { x: 370, y: 250 },
+                targetPosition: { x: 370, y: 265 },
                 size: { radius: 10 },
                 snapRadius: 25,
                 finalColor: "#2C3E50",
@@ -387,7 +386,7 @@ const AnimalData = {
             {
                 id: "spot2",
                 type: "circle",
-                targetPosition: { x: 530, y: 250 },
+                targetPosition: { x: 530, y: 265 },
                 size: { radius: 10 },
                 snapRadius: 25,
                 finalColor: "#2C3E50",
@@ -398,7 +397,7 @@ const AnimalData = {
             {
                 id: "spot3",
                 type: "circle",
-                targetPosition: { x: 380, y: 330 },
+                targetPosition: { x: 380, y: 345 },
                 size: { radius: 8 },
                 snapRadius: 20,
                 finalColor: "#8E44AD",
@@ -409,7 +408,7 @@ const AnimalData = {
             {
                 id: "spot4",
                 type: "circle",
-                targetPosition: { x: 520, y: 330 },
+                targetPosition: { x: 520, y: 345 },
                 size: { radius: 8 },
                 snapRadius: 20,
                 finalColor: "#8E44AD",
@@ -420,7 +419,7 @@ const AnimalData = {
         ]
     },
 
-    // NEW ANIMAL 1: Cat
+    // Cat Definition (redesigned: matching ears, round eyes, tucked-in tail)
     cat: {
         name: "Cat",
         emoji: "🐱",
@@ -439,94 +438,88 @@ const AnimalData = {
             centerY: 300
         },
         shapes: [
-            // Head
             {
                 id: "head",
                 type: "oval",
-                targetPosition: { x: 400, y: 195 },
-                size: { width: 130, height: 90 },
+                targetPosition: { x: 400, y: 205 },
+                size: { width: 130, height: 100 },
                 snapRadius: 70,
-                finalColor: "#222222", // near-black
-                strokeColor: "#111111",
+                finalColor: "#3D3D3D",
+                strokeColor: "#1B1B1B",
                 strokeWidth: 3,
                 zIndex: 3
             },
-            // Body
             {
                 id: "body",
                 type: "oval",
-                targetPosition: { x: 400, y: 330 },
-                size: { width: 140, height: 170 },
+                targetPosition: { x: 400, y: 355 },
+                size: { width: 150, height: 180 },
                 snapRadius: 80,
-                finalColor: "#222222",
-                strokeColor: "#111111",
+                finalColor: "#3D3D3D",
+                strokeColor: "#1B1B1B",
                 strokeWidth: 3,
                 zIndex: 2
             },
-            // Belly patch
             {
                 id: "bellyPatch",
                 type: "oval",
-                targetPosition: { x: 400, y: 340 },
-                size: { width: 60, height: 100 },
+                targetPosition: { x: 400, y: 365 },
+                size: { width: 65, height: 110 },
                 snapRadius: 40,
                 finalColor: "#FDFEFE",
                 strokeColor: "#D5D8DC",
                 strokeWidth: 2,
                 zIndex: 3
             },
-            // Ears
             {
                 id: "ear1",
                 type: "triangle",
-                targetPosition: { x: 360, y: 130 },
-                size: { width: 35, height: 55 },
+                targetPosition: { x: 355, y: 145 },
+                size: { width: 38, height: 60 },
                 snapRadius: 40,
-                finalColor: "#222222",
-                strokeColor: "#111111",
+                finalColor: "#3D3D3D",
+                strokeColor: "#1B1B1B",
                 strokeWidth: 3,
                 zIndex: 4
             },
             {
                 id: "ear2",
                 type: "triangle",
-                targetPosition: { x: 440, y: 130 },
-                size: { width: 35, height: 65 },
+                targetPosition: { x: 445, y: 145 },
+                size: { width: 38, height: 60 },
                 snapRadius: 40,
-                finalColor: "#EEEEEE", // white ear for contrast
-                strokeColor: "#AAAAAA",
+                finalColor: "#3D3D3D",
+                strokeColor: "#1B1B1B",
                 strokeWidth: 3,
                 zIndex: 4
             },
-            // Eyes
             {
                 id: "eye1",
-                type: "triangle",
-                targetPosition: { x: 380, y: 180 },
-                size: { width: 24, height: 20 },
+                type: "circle",
+                targetPosition: { x: 375, y: 200 },
+                size: { radius: 14 },
                 snapRadius: 25,
-                finalColor: "#FDFEFE", // white eye
-                strokeColor: "#D5D8DC",
+                finalColor: "#27AE60",
+                strokeColor: "#1B1B1B",
                 strokeWidth: 2,
                 zIndex: 5
             },
             {
                 id: "eye2",
-                type: "triangle",
-                targetPosition: { x: 420, y: 180 },
-                size: { width: 24, height: 20 },
+                type: "circle",
+                targetPosition: { x: 425, y: 200 },
+                size: { radius: 14 },
                 snapRadius: 25,
-                finalColor: "#27AE60", // green eye
-                strokeColor: "#239B56",
+                finalColor: "#27AE60",
+                strokeColor: "#1B1B1B",
                 strokeWidth: 2,
                 zIndex: 5
             },
-            // Nose
             {
                 id: "nose",
                 type: "triangle",
-                targetPosition: { x: 400, y: 215 },
-                size: { width: 16, height: 14 },
+                targetPosition: { x: 400, y: 228 },
+                size: { width: 16, height: 13 },
                 snapRadius: 20,
                 finalColor: "#E91E63",
                 strokeColor: "#C2185B",
@@ -534,14 +527,13 @@ const AnimalData = {
                 zIndex: 6,
                 rotation: 180
             },
-            // Arms (arm1 = white)
             {
                 id: "arm1",
                 type: "oval",
-                targetPosition: { x: 330, y: 330 },
-                size: { width: 32, height: 54 },
+                targetPosition: { x: 335, y: 355 },
+                size: { width: 34, height: 56 },
                 snapRadius: 40,
-                finalColor: "#FDFEFE", // white paw
+                finalColor: "#FDFEFE",
                 strokeColor: "#D5D8DC",
                 strokeWidth: 3,
                 zIndex: 3
@@ -549,54 +541,52 @@ const AnimalData = {
             {
                 id: "arm2",
                 type: "oval",
-                targetPosition: { x: 470, y: 330 },
-                size: { width: 32, height: 54 },
+                targetPosition: { x: 465, y: 355 },
+                size: { width: 34, height: 56 },
                 snapRadius: 40,
-                finalColor: "#222222",
-                strokeColor: "#111111",
+                finalColor: "#FDFEFE",
+                strokeColor: "#D5D8DC",
                 strokeWidth: 3,
                 zIndex: 3
             },
-            // Legs
             {
                 id: "leg1",
                 type: "oval",
-                targetPosition: { x: 360, y: 440 },
-                size: { width: 32, height: 54 },
+                targetPosition: { x: 365, y: 465 },
+                size: { width: 34, height: 56 },
                 snapRadius: 35,
-                finalColor: "#222222",
-                strokeColor: "#111111",
+                finalColor: "#3D3D3D",
+                strokeColor: "#1B1B1B",
                 strokeWidth: 3,
                 zIndex: 3
             },
             {
                 id: "leg2",
                 type: "oval",
-                targetPosition: { x: 440, y: 440 },
-                size: { width: 32, height: 54 },
+                targetPosition: { x: 435, y: 465 },
+                size: { width: 34, height: 56 },
                 snapRadius: 35,
-                finalColor: "#222222",
-                strokeColor: "#111111",
+                finalColor: "#3D3D3D",
+                strokeColor: "#1B1B1B",
                 strokeWidth: 3,
                 zIndex: 3
             },
-            // Tail
             {
                 id: "tail",
                 type: "triangle",
-                targetPosition: { x: 310, y: 310 },
-                size: { width: 90, height: 160 },
-                snapRadius: 60,
-                finalColor: "#222222",
-                strokeColor: "#111111",
+                targetPosition: { x: 300, y: 415 },
+                size: { width: 42, height: 105 },
+                snapRadius: 55,
+                finalColor: "#3D3D3D",
+                strokeColor: "#1B1B1B",
                 strokeWidth: 3,
                 zIndex: 1,
-                rotation: -45
+                rotation: -35
             }
         ]
     },
 
-    // NEW ANIMAL 2: Fish
+    // Fish Definition
     fish: {
         name: "Fish",
         emoji: "🐟",
@@ -607,7 +597,7 @@ const AnimalData = {
             shapeSuccess: "Swimming-sational! Perfect placement!"
         },
         difficulty: 2,
-        totalShapes: 8,
+        totalShapes: 9,
         canvas: {
             width: 800,
             height: 500,
@@ -618,7 +608,7 @@ const AnimalData = {
             {
                 id: "body",
                 type: "oval",
-                targetPosition: { x: 400, y: 250 },
+                targetPosition: { x: 390, y: 250 },
                 size: { width: 200, height: 120 },
                 snapRadius: 80,
                 finalColor: "#3498DB",
@@ -629,7 +619,7 @@ const AnimalData = {
             {
                 id: "head",
                 type: "circle",
-                targetPosition: { x: 320, y: 250 },
+                targetPosition: { x: 310, y: 250 },
                 size: { radius: 60 },
                 snapRadius: 70,
                 finalColor: "#5DADE2",
@@ -640,7 +630,7 @@ const AnimalData = {
             {
                 id: "right-eye",
                 type: "circle",
-                targetPosition: { x: 300, y: 230 },
+                targetPosition: { x: 290, y: 230 },
                 size: { radius: 12 },
                 snapRadius: 25,
                 finalColor: "#2C3E50",
@@ -651,7 +641,7 @@ const AnimalData = {
             {
                 id: "left-eye",
                 type: "circle",
-                targetPosition: { x: 300, y: 280 },
+                targetPosition: { x: 290, y: 280 },
                 size: { radius: 12 },
                 snapRadius: 25,
                 finalColor: "#2C3E50",
@@ -662,7 +652,7 @@ const AnimalData = {
             {
                 id: "tailMain",
                 type: "triangle",
-                targetPosition: { x: 520, y: 250 },
+                targetPosition: { x: 510, y: 250 },
                 size: { width: 80, height: 100 },
                 snapRadius: 60,
                 finalColor: "#2980B9",
@@ -674,7 +664,7 @@ const AnimalData = {
             {
                 id: "topFin",
                 type: "triangle",
-                targetPosition: { x: 400, y: 180 },
+                targetPosition: { x: 390, y: 180 },
                 size: { width: 60, height: 40 },
                 snapRadius: 45,
                 finalColor: "#E74C3C",
@@ -686,7 +676,7 @@ const AnimalData = {
             {
                 id: "bottomFin",
                 type: "triangle",
-                targetPosition: { x: 400, y: 320 },
+                targetPosition: { x: 390, y: 320 },
                 size: { width: 60, height: 40 },
                 snapRadius: 45,
                 finalColor: "#E74C3C",
@@ -698,7 +688,7 @@ const AnimalData = {
             {
                 id: "sideFin1",
                 type: "triangle",
-                targetPosition: { x: 350, y: 200 },
+                targetPosition: { x: 340, y: 200 },
                 size: { width: 40, height: 30 },
                 snapRadius: 35,
                 finalColor: "#F39C12",
@@ -710,7 +700,7 @@ const AnimalData = {
             {
                 id: "sideFin2",
                 type: "triangle",
-                targetPosition: { x: 350, y: 300 },
+                targetPosition: { x: 340, y: 300 },
                 size: { width: 40, height: 30 },
                 snapRadius: 35,
                 finalColor: "#F39C12",
@@ -722,7 +712,7 @@ const AnimalData = {
         ]
     },
 
-    // NEW ANIMAL 3: Elephant
+    // Elephant Definition
     elephant: {
         name: "Elephant",
         emoji: "🐘",
@@ -741,11 +731,10 @@ const AnimalData = {
             centerY: 350
         },
         shapes: [
-            // BODY
             {
                 id: "body",
                 type: "oval",
-                targetPosition: { x: 460, y: 390 },
+                targetPosition: { x: 538, y: 390 },
                 size: { width: 240, height: 180 },
                 snapRadius: 100,
                 finalColor: "#85929E",
@@ -753,11 +742,10 @@ const AnimalData = {
                 strokeWidth: 4,
                 zIndex: 1
             },
-            // HEAD (left of body)
             {
                 id: "head",
                 type: "circle",
-                targetPosition: { x: 330, y: 320 },
+                targetPosition: { x: 408, y: 320 },
                 size: { radius: 70 },
                 snapRadius: 60,
                 finalColor: "#85929E",
@@ -765,11 +753,10 @@ const AnimalData = {
                 strokeWidth: 4,
                 zIndex: 3
             },
-            // EARS (big, flared out)
             {
                 id: "ear1",
                 type: "oval",
-                targetPosition: { x: 235, y: 230 },
+                targetPosition: { x: 313, y: 230 },
                 size: { width: 140, height: 140 },
                 snapRadius: 70,
                 finalColor: "#AEB6BF",
@@ -780,7 +767,7 @@ const AnimalData = {
             {
                 id: "ear2",
                 type: "oval",
-                targetPosition: { x: 410, y: 230 },
+                targetPosition: { x: 488, y: 230 },
                 size: { width: 140, height: 140 },
                 snapRadius: 60,
                 finalColor: "#AEB6BF",
@@ -788,11 +775,10 @@ const AnimalData = {
                 strokeWidth: 3,
                 zIndex: 1
             },
-            // EYES
             {
                 id: "eye1",
                 type: "circle",
-                targetPosition: { x: 300, y: 305 },
+                targetPosition: { x: 378, y: 305 },
                 size: { radius: 15 },
                 snapRadius: 20,
                 finalColor: "#2C3E50",
@@ -803,7 +789,7 @@ const AnimalData = {
             {
                 id: "eye2",
                 type: "circle",
-                targetPosition: { x: 355, y: 305 },
+                targetPosition: { x: 433, y: 305 },
                 size: { radius: 15 },
                 snapRadius: 20,
                 finalColor: "#2C3E50",
@@ -811,11 +797,10 @@ const AnimalData = {
                 strokeWidth: 2,
                 zIndex: 5
             },
-            // TRUNK
             {
                 id: "trunk",
                 type: "oval",
-                targetPosition: { x: 330, y: 390 },
+                targetPosition: { x: 408, y: 390 },
                 size: { width: 40, height: 140 },
                 snapRadius: 50,
                 finalColor: "#85929E",
@@ -823,11 +808,10 @@ const AnimalData = {
                 strokeWidth: 4,
                 zIndex: 4
             },
-            // LEGS (4 total)
             {
                 id: "leg1",
                 type: "rectangle",
-                targetPosition: { x: 380, y: 500 },
+                targetPosition: { x: 458, y: 500 },
                 size: { width: 40, height: 80 },
                 snapRadius: 50,
                 finalColor: "#85929E",
@@ -838,7 +822,7 @@ const AnimalData = {
             {
                 id: "leg2",
                 type: "rectangle",
-                targetPosition: { x: 420, y: 500 },
+                targetPosition: { x: 498, y: 500 },
                 size: { width: 40, height: 80 },
                 snapRadius: 50,
                 finalColor: "#85929E",
@@ -849,7 +833,7 @@ const AnimalData = {
             {
                 id: "leg3",
                 type: "rectangle",
-                targetPosition: { x: 485, y: 500 },
+                targetPosition: { x: 563, y: 500 },
                 size: { width: 40, height: 80 },
                 snapRadius: 50,
                 finalColor: "#85929E",
@@ -860,7 +844,7 @@ const AnimalData = {
             {
                 id: "leg4",
                 type: "rectangle",
-                targetPosition: { x: 540, y: 500 },
+                targetPosition: { x: 618, y: 500 },
                 size: { width: 40, height: 80 },
                 snapRadius: 50,
                 finalColor: "#85929E",
@@ -871,7 +855,7 @@ const AnimalData = {
         ]
     },
 
-    // NEW ANIMAL 4: Turtle
+    // Turtle Definition
     turtle: {
         name: "Turtle",
         emoji: "🐢",
@@ -882,7 +866,7 @@ const AnimalData = {
             shapeSuccess: "Turtle-y awesome! Perfect fit!"
         },
         difficulty: 2,
-        totalShapes: 8,
+        totalShapes: 9,
         canvas: {
             width: 800,
             height: 600,
@@ -893,7 +877,7 @@ const AnimalData = {
             {
                 id: "shell",
                 type: "oval",
-                targetPosition: { x: 400, y: 280 },
+                targetPosition: { x: 400, y: 320 },
                 size: { width: 180, height: 140 },
                 snapRadius: 90,
                 finalColor: "#27AE60",
@@ -904,7 +888,7 @@ const AnimalData = {
             {
                 id: "shellPattern",
                 type: "diamond",
-                targetPosition: { x: 400, y: 280 },
+                targetPosition: { x: 400, y: 320 },
                 size: { width: 120, height: 80 },
                 snapRadius: 60,
                 finalColor: "#229954",
@@ -915,7 +899,7 @@ const AnimalData = {
             {
                 id: "head",
                 type: "oval",
-                targetPosition: { x: 400, y: 180 },
+                targetPosition: { x: 400, y: 220 },
                 size: { width: 60, height: 70 },
                 snapRadius: 50,
                 finalColor: "#58D68D",
@@ -926,7 +910,7 @@ const AnimalData = {
             {
                 id: "eye1",
                 type: "circle",
-                targetPosition: { x: 385, y: 170 },
+                targetPosition: { x: 385, y: 210 },
                 size: { radius: 6 },
                 snapRadius: 15,
                 finalColor: "#2C3E50",
@@ -937,7 +921,7 @@ const AnimalData = {
             {
                 id: "eye2",
                 type: "circle",
-                targetPosition: { x: 415, y: 170 },
+                targetPosition: { x: 415, y: 210 },
                 size: { radius: 6 },
                 snapRadius: 15,
                 finalColor: "#2C3E50",
@@ -948,7 +932,7 @@ const AnimalData = {
             {
                 id: "leg1",
                 type: "oval",
-                targetPosition: { x: 330, y: 330 },
+                targetPosition: { x: 330, y: 370 },
                 size: { width: 40, height: 30 },
                 snapRadius: 35,
                 finalColor: "#58D68D",
@@ -959,7 +943,7 @@ const AnimalData = {
             {
                 id: "leg2",
                 type: "oval",
-                targetPosition: { x: 470, y: 330 },
+                targetPosition: { x: 470, y: 370 },
                 size: { width: 40, height: 30 },
                 snapRadius: 35,
                 finalColor: "#58D68D",
@@ -970,7 +954,7 @@ const AnimalData = {
             {
                 id: "frontLeg1",
                 type: "oval",
-                targetPosition: { x: 330, y: 215 },
+                targetPosition: { x: 330, y: 255 },
                 size: { width: 40, height: 30 },
                 snapRadius: 35,
                 finalColor: "#58D68D",
@@ -981,7 +965,7 @@ const AnimalData = {
             {
                 id: "frontLeg2",
                 type: "oval",
-                targetPosition: { x: 470, y: 215 },
+                targetPosition: { x: 470, y: 255 },
                 size: { width: 40, height: 30 },
                 snapRadius: 35,
                 finalColor: "#58D68D",
@@ -992,7 +976,7 @@ const AnimalData = {
             {
                 id: "tail",
                 type: "triangle",
-                targetPosition: { x: 400, y: 360 },
+                targetPosition: { x: 400, y: 400 },
                 size: { width: 20, height: 30 },
                 snapRadius: 25,
                 finalColor: "#58D68D",
@@ -1004,7 +988,7 @@ const AnimalData = {
         ]
     },
 
-    // NEW ANIMAL 5: Lion
+    // Lion Definition (redesigned: spiky mane, rounded oval limbs, real tail with tuft)
     lion: {
         name: "Lion",
         emoji: "🦁",
@@ -1015,7 +999,7 @@ const AnimalData = {
             shapeSuccess: "Mane-ificent! That looks perfect!"
         },
         difficulty: 3,
-        totalShapes: 14,
+        totalShapes: 20,
         canvas: {
             width: 800,
             height: 700,
@@ -1023,49 +1007,117 @@ const AnimalData = {
             centerY: 350
         },
         shapes: [
-            // Mane and Head
             {
                 id: "mane",
                 type: "circle",
-                targetPosition: { x: 400, y: 200 },
-                size: { radius: 100 },
-                snapRadius: 110,
-                finalColor: "#D4AF37", // Mane - more golden
-                strokeColor: "#B8860B",
-                strokeWidth: 4,
+                targetPosition: { x: 400, y: 210 },
+                size: { radius: 98 },
+                snapRadius: 105,
+                finalColor: "#B8860B",
+                strokeColor: "#8A6508",
+                strokeWidth: 3,
                 zIndex: 1
+            },
+            {
+                id: "maneSpike1",
+                type: "triangle",
+                targetPosition: { x: 400, y: 96 },
+                size: { width: 34, height: 58 },
+                snapRadius: 38,
+                finalColor: "#D4AF37",
+                strokeColor: "#8A6508",
+                strokeWidth: 2,
+                zIndex: 1,
+                rotation: 0
+            },
+            {
+                id: "maneSpike2",
+                type: "triangle",
+                targetPosition: { x: 485, y: 125 },
+                size: { width: 34, height: 58 },
+                snapRadius: 38,
+                finalColor: "#B8860B",
+                strokeColor: "#8A6508",
+                strokeWidth: 2,
+                zIndex: 1,
+                rotation: 60
+            },
+            {
+                id: "maneSpike3",
+                type: "triangle",
+                targetPosition: { x: 540, y: 210 },
+                size: { width: 34, height: 58 },
+                snapRadius: 38,
+                finalColor: "#D4AF37",
+                strokeColor: "#8A6508",
+                strokeWidth: 2,
+                zIndex: 1,
+                rotation: 90
+            },
+            {
+                id: "maneSpike4",
+                type: "triangle",
+                targetPosition: { x: 485, y: 295 },
+                size: { width: 34, height: 58 },
+                snapRadius: 38,
+                finalColor: "#B8860B",
+                strokeColor: "#8A6508",
+                strokeWidth: 2,
+                zIndex: 1,
+                rotation: 120
+            },
+            {
+                id: "maneSpike5",
+                type: "triangle",
+                targetPosition: { x: 315, y: 295 },
+                size: { width: 34, height: 58 },
+                snapRadius: 38,
+                finalColor: "#D4AF37",
+                strokeColor: "#8A6508",
+                strokeWidth: 2,
+                zIndex: 1,
+                rotation: 240
+            },
+            {
+                id: "maneSpike6",
+                type: "triangle",
+                targetPosition: { x: 260, y: 210 },
+                size: { width: 34, height: 58 },
+                snapRadius: 38,
+                finalColor: "#B8860B",
+                strokeColor: "#8A6508",
+                strokeWidth: 2,
+                zIndex: 1,
+                rotation: 270
+            },
+            {
+                id: "maneSpike7",
+                type: "triangle",
+                targetPosition: { x: 315, y: 125 },
+                size: { width: 34, height: 58 },
+                snapRadius: 38,
+                finalColor: "#D4AF37",
+                strokeColor: "#8A6508",
+                strokeWidth: 2,
+                zIndex: 1,
+                rotation: 300
             },
             {
                 id: "head",
                 type: "circle",
-                targetPosition: { x: 400, y: 200 },
-                size: { radius: 60 },
+                targetPosition: { x: 400, y: 210 },
+                size: { radius: 62 },
                 snapRadius: 70,
-                finalColor: "#FFD966", // Lighter yellow for head
+                finalColor: "#FFD966",
                 strokeColor: "#B8860B",
                 strokeWidth: 3,
                 zIndex: 2
             },
-
-            // Body
-            {
-                id: "body",
-                type: "rectangle",
-                targetPosition: { x: 400, y: 380 },
-                size: { width: 160, height: 200 },
-                snapRadius: 90,
-                finalColor: "#FFD966",
-                strokeColor: "#B8860B",
-                strokeWidth: 4,
-                zIndex: 2
-            },
-
-            // Eyes
             {
                 id: "eye1",
                 type: "circle",
-                targetPosition: { x: 380, y: 185 },
-                size: { radius: 8 },
+                targetPosition: { x: 378, y: 200 },
+                size: { radius: 9 },
                 snapRadius: 20,
                 finalColor: "#2C3E50",
                 strokeColor: "#1B2631",
@@ -1075,20 +1127,18 @@ const AnimalData = {
             {
                 id: "eye2",
                 type: "circle",
-                targetPosition: { x: 420, y: 185 },
-                size: { radius: 8 },
+                targetPosition: { x: 422, y: 200 },
+                size: { radius: 9 },
                 snapRadius: 20,
                 finalColor: "#2C3E50",
                 strokeColor: "#1B2631",
                 strokeWidth: 2,
                 zIndex: 5
             },
-
-            // Nose
             {
                 id: "nose",
                 type: "triangle",
-                targetPosition: { x: 400, y: 210 },
+                targetPosition: { x: 400, y: 228 },
                 size: { width: 15, height: 12 },
                 snapRadius: 22,
                 finalColor: "#2C3E50",
@@ -1097,14 +1147,23 @@ const AnimalData = {
                 zIndex: 5,
                 rotation: 180
             },
-
-            // Arms (NEW)
+            {
+                id: "body",
+                type: "oval",
+                targetPosition: { x: 400, y: 390 },
+                size: { width: 190, height: 170 },
+                snapRadius: 100,
+                finalColor: "#FFD966",
+                strokeColor: "#B8860B",
+                strokeWidth: 4,
+                zIndex: 1
+            },
             {
                 id: "arm1",
-                type: "rectangle",
-                targetPosition: { x: 340, y: 370 },
-                size: { width: 28, height: 70 },
-                snapRadius: 40,
+                type: "oval",
+                targetPosition: { x: 320, y: 370 },
+                size: { width: 40, height: 75 },
+                snapRadius: 45,
                 finalColor: "#FFD966",
                 strokeColor: "#B8860B",
                 strokeWidth: 3,
@@ -1112,88 +1171,419 @@ const AnimalData = {
             },
             {
                 id: "arm2",
-                type: "rectangle",
-                targetPosition: { x: 460, y: 370 },
-                size: { width: 28, height: 70 },
-                snapRadius: 40,
+                type: "oval",
+                targetPosition: { x: 480, y: 370 },
+                size: { width: 40, height: 75 },
+                snapRadius: 45,
                 finalColor: "#FFD966",
                 strokeColor: "#B8860B",
                 strokeWidth: 3,
                 zIndex: 3
             },
-
-            // Legs
             {
                 id: "leg1",
-                type: "rectangle",
-                targetPosition: { x: 350, y: 520 },
-                size: { width: 40, height: 80 },
+                type: "oval",
+                targetPosition: { x: 355, y: 520 },
+                size: { width: 42, height: 85 },
                 snapRadius: 50,
                 finalColor: "#FFD966",
                 strokeColor: "#B8860B",
                 strokeWidth: 3,
-                zIndex: 3
+                zIndex: 2
             },
             {
                 id: "leg2",
-                type: "rectangle",
-                targetPosition: { x: 450, y: 520 },
-                size: { width: 40, height: 80 },
+                type: "oval",
+                targetPosition: { x: 445, y: 520 },
+                size: { width: 42, height: 85 },
                 snapRadius: 50,
                 finalColor: "#FFD966",
                 strokeColor: "#B8860B",
                 strokeWidth: 3,
-                zIndex: 3
+                zIndex: 2
             },
-
-            // Feet
             {
                 id: "foot1",
                 type: "circle",
-                targetPosition: { x: 350, y: 580 },
-                size: { radius: 25 },
-                snapRadius: 35,
+                targetPosition: { x: 355, y: 562 },
+                size: { radius: 22 },
+                snapRadius: 30,
                 finalColor: "#B8860B",
-                strokeColor: "#9A7209",
+                strokeColor: "#8A6508",
                 strokeWidth: 3,
                 zIndex: 4
             },
             {
                 id: "foot2",
                 type: "circle",
-                targetPosition: { x: 450, y: 580 },
-                size: { radius: 25 },
-                snapRadius: 35,
+                targetPosition: { x: 445, y: 562 },
+                size: { radius: 22 },
+                snapRadius: 30,
                 finalColor: "#B8860B",
-                strokeColor: "#9A7209",
+                strokeColor: "#8A6508",
                 strokeWidth: 3,
                 zIndex: 4
             },
-
-            // Tail
             {
-                id: "tail1",
-                type: "diamond",
-                targetPosition: { x: 320, y: 420 },
-                size: { width: 60, height: 40 },
-                snapRadius: 40,
+                id: "tail",
+                type: "triangle",
+                targetPosition: { x: 310, y: 430 },
+                size: { width: 46, height: 130 },
+                snapRadius: 60,
                 finalColor: "#FFD966",
                 strokeColor: "#B8860B",
                 strokeWidth: 3,
-                zIndex: 2,
-                rotation: 45
+                zIndex: 1,
+                rotation: -30
+            }
+        ]
+    },
+
+    // Dog Definition (new)
+    dog: {
+        name: "Dog",
+        emoji: "🐶",
+        sounds: {
+            animalSound: "Woof woof! I'm a friendly puppy!",
+            completionPhrase: "Paw-some! You built an adorable dog!",
+            encouragement: "Dogs love to play fetch and wag their tails!",
+            shapeSuccess: "Woof-tastic! Great placement!"
+        },
+        difficulty: 2,
+        totalShapes: 12,
+        canvas: {
+            width: 800,
+            height: 600,
+            centerX: 400,
+            centerY: 300
+        },
+        shapes: [
+            {
+                id: "head",
+                type: "circle",
+                targetPosition: { x: 400, y: 190 },
+                size: { radius: 65 },
+                snapRadius: 75,
+                finalColor: "#D2A679",
+                strokeColor: "#9C7248",
+                strokeWidth: 3,
+                zIndex: 2
             },
             {
-                id: "tail2",
-                type: "diamond",
-                targetPosition: { x: 280, y: 450 },
-                size: { width: 40, height: 30 },
-                snapRadius: 35,
-                finalColor: "#D4AF37",
-                strokeColor: "#B8860B",
+                id: "ear1",
+                type: "oval",
+                targetPosition: { x: 335, y: 145 },
+                size: { width: 40, height: 68 },
+                snapRadius: 45,
+                finalColor: "#8B5A2B",
+                strokeColor: "#6B4522",
                 strokeWidth: 3,
+                zIndex: 1,
+                rotation: -20
+            },
+            {
+                id: "ear2",
+                type: "oval",
+                targetPosition: { x: 465, y: 145 },
+                size: { width: 40, height: 68 },
+                snapRadius: 45,
+                finalColor: "#8B5A2B",
+                strokeColor: "#6B4522",
+                strokeWidth: 3,
+                zIndex: 1,
+                rotation: 20
+            },
+            {
+                id: "snout",
+                type: "oval",
+                targetPosition: { x: 400, y: 232 },
+                size: { width: 55, height: 42 },
+                snapRadius: 40,
+                finalColor: "#E8C9A0",
+                strokeColor: "#9C7248",
+                strokeWidth: 3,
+                zIndex: 3
+            },
+            {
+                id: "nose",
+                type: "circle",
+                targetPosition: { x: 400, y: 245 },
+                size: { radius: 10 },
+                snapRadius: 20,
+                finalColor: "#2C3E50",
+                strokeColor: "#1B2631",
+                strokeWidth: 2,
+                zIndex: 5
+            },
+            {
+                id: "eye1",
+                type: "circle",
+                targetPosition: { x: 372, y: 180 },
+                size: { radius: 9 },
+                snapRadius: 20,
+                finalColor: "#2C3E50",
+                strokeColor: "#1B2631",
+                strokeWidth: 2,
+                zIndex: 5
+            },
+            {
+                id: "eye2",
+                type: "circle",
+                targetPosition: { x: 428, y: 180 },
+                size: { radius: 9 },
+                snapRadius: 20,
+                finalColor: "#2C3E50",
+                strokeColor: "#1B2631",
+                strokeWidth: 2,
+                zIndex: 5
+            },
+            {
+                id: "body",
+                type: "oval",
+                targetPosition: { x: 400, y: 345 },
+                size: { width: 150, height: 150 },
+                snapRadius: 85,
+                finalColor: "#D2A679",
+                strokeColor: "#9C7248",
+                strokeWidth: 3,
+                zIndex: 1
+            },
+            {
+                id: "arm1",
+                type: "oval",
+                targetPosition: { x: 335, y: 340 },
+                size: { width: 35, height: 60 },
+                snapRadius: 40,
+                finalColor: "#D2A679",
+                strokeColor: "#9C7248",
+                strokeWidth: 3,
+                zIndex: 2
+            },
+            {
+                id: "arm2",
+                type: "oval",
+                targetPosition: { x: 465, y: 340 },
+                size: { width: 35, height: 60 },
+                snapRadius: 40,
+                finalColor: "#D2A679",
+                strokeColor: "#9C7248",
+                strokeWidth: 3,
+                zIndex: 2
+            },
+            {
+                id: "leg1",
+                type: "oval",
+                targetPosition: { x: 365, y: 445 },
+                size: { width: 35, height: 65 },
+                snapRadius: 40,
+                finalColor: "#D2A679",
+                strokeColor: "#9C7248",
+                strokeWidth: 3,
+                zIndex: 2
+            },
+            {
+                id: "leg2",
+                type: "oval",
+                targetPosition: { x: 435, y: 445 },
+                size: { width: 35, height: 65 },
+                snapRadius: 40,
+                finalColor: "#D2A679",
+                strokeColor: "#9C7248",
+                strokeWidth: 3,
+                zIndex: 2
+            },
+            {
+                id: "tail",
+                type: "triangle",
+                targetPosition: { x: 500, y: 335 },
+                size: { width: 32, height: 80 },
+                snapRadius: 45,
+                finalColor: "#D2A679",
+                strokeColor: "#9C7248",
+                strokeWidth: 3,
+                zIndex: 1,
+                rotation: 55
+            }
+        ]
+    },
+
+    // Rabbit Definition (new)
+    rabbit: {
+        name: "Rabbit",
+        emoji: "🐰",
+        sounds: {
+            animalSound: "Hop hop! I'm a bouncy bunny!",
+            completionPhrase: "Hop-py days! You built a cute bunny rabbit!",
+            encouragement: "Rabbits have long ears and love carrots!",
+            shapeSuccess: "Hop-tastic! That fits perfectly!"
+        },
+        difficulty: 2,
+        totalShapes: 14,
+        canvas: {
+            width: 800,
+            height: 600,
+            centerX: 400,
+            centerY: 300
+        },
+        shapes: [
+            {
+                id: "ear1",
+                type: "oval",
+                targetPosition: { x: 375, y: 140 },
+                size: { width: 30, height: 120 },
+                snapRadius: 50,
+                finalColor: "#F5F5F5",
+                strokeColor: "#C7C7C7",
+                strokeWidth: 3,
+                zIndex: 1,
+                rotation: -8
+            },
+            {
+                id: "ear2",
+                type: "oval",
+                targetPosition: { x: 425, y: 140 },
+                size: { width: 30, height: 120 },
+                snapRadius: 50,
+                finalColor: "#F5F5F5",
+                strokeColor: "#C7C7C7",
+                strokeWidth: 3,
+                zIndex: 1,
+                rotation: 8
+            },
+            {
+                id: "earInner1",
+                type: "oval",
+                targetPosition: { x: 375, y: 148 },
+                size: { width: 14, height: 95 },
+                snapRadius: 30,
+                finalColor: "#FFB6C1",
+                strokeColor: "#E89AAA",
+                strokeWidth: 2,
                 zIndex: 2,
-                rotation: 30
+                rotation: -8
+            },
+            {
+                id: "earInner2",
+                type: "oval",
+                targetPosition: { x: 425, y: 148 },
+                size: { width: 14, height: 95 },
+                snapRadius: 30,
+                finalColor: "#FFB6C1",
+                strokeColor: "#E89AAA",
+                strokeWidth: 2,
+                zIndex: 2,
+                rotation: 8
+            },
+            {
+                id: "head",
+                type: "circle",
+                targetPosition: { x: 400, y: 260 },
+                size: { radius: 60 },
+                snapRadius: 70,
+                finalColor: "#F5F5F5",
+                strokeColor: "#C7C7C7",
+                strokeWidth: 3,
+                zIndex: 3
+            },
+            {
+                id: "eye1",
+                type: "circle",
+                targetPosition: { x: 380, y: 250 },
+                size: { radius: 9 },
+                snapRadius: 20,
+                finalColor: "#2C3E50",
+                strokeColor: "#1B2631",
+                strokeWidth: 2,
+                zIndex: 5
+            },
+            {
+                id: "eye2",
+                type: "circle",
+                targetPosition: { x: 420, y: 250 },
+                size: { radius: 9 },
+                snapRadius: 20,
+                finalColor: "#2C3E50",
+                strokeColor: "#1B2631",
+                strokeWidth: 2,
+                zIndex: 5
+            },
+            {
+                id: "nose",
+                type: "triangle",
+                targetPosition: { x: 400, y: 272 },
+                size: { width: 13, height: 11 },
+                snapRadius: 20,
+                finalColor: "#FF8FA3",
+                strokeColor: "#E06377",
+                strokeWidth: 2,
+                zIndex: 5,
+                rotation: 180
+            },
+            {
+                id: "tail",
+                type: "circle",
+                targetPosition: { x: 478, y: 428 },
+                size: { radius: 20 },
+                snapRadius: 35,
+                finalColor: "#F5F5F5",
+                strokeColor: "#C7C7C7",
+                strokeWidth: 3,
+                zIndex: 1
+            },
+            {
+                id: "body",
+                type: "oval",
+                targetPosition: { x: 400, y: 400 },
+                size: { width: 140, height: 150 },
+                snapRadius: 85,
+                finalColor: "#F5F5F5",
+                strokeColor: "#C7C7C7",
+                strokeWidth: 3,
+                zIndex: 2
+            },
+            {
+                id: "arm1",
+                type: "oval",
+                targetPosition: { x: 345, y: 390 },
+                size: { width: 32, height: 55 },
+                snapRadius: 40,
+                finalColor: "#F5F5F5",
+                strokeColor: "#C7C7C7",
+                strokeWidth: 3,
+                zIndex: 3
+            },
+            {
+                id: "arm2",
+                type: "oval",
+                targetPosition: { x: 455, y: 390 },
+                size: { width: 32, height: 55 },
+                snapRadius: 40,
+                finalColor: "#F5F5F5",
+                strokeColor: "#C7C7C7",
+                strokeWidth: 3,
+                zIndex: 3
+            },
+            {
+                id: "leg1",
+                type: "oval",
+                targetPosition: { x: 365, y: 478 },
+                size: { width: 42, height: 62 },
+                snapRadius: 45,
+                finalColor: "#F5F5F5",
+                strokeColor: "#C7C7C7",
+                strokeWidth: 3,
+                zIndex: 3
+            },
+            {
+                id: "leg2",
+                type: "oval",
+                targetPosition: { x: 435, y: 478 },
+                size: { width: 42, height: 62 },
+                snapRadius: 45,
+                finalColor: "#F5F5F5",
+                strokeColor: "#C7C7C7",
+                strokeWidth: 3,
+                zIndex: 3
             }
         ]
     }
@@ -1212,7 +1602,7 @@ AnimalData.getAnimal = function(animalId) {
 AnimalData.getShapesByType = function(animalId) {
     const animal = this.getAnimal(animalId);
     if (!animal) return {};
-    
+
     const shapesByType = {};
     animal.shapes.forEach(shape => {
         if (!shapesByType[shape.type]) {
@@ -1220,73 +1610,22 @@ AnimalData.getShapesByType = function(animalId) {
         }
         shapesByType[shape.type].push(shape);
     });
-    
+
     return shapesByType;
 };
 
 AnimalData.getRequiredShapes = function(animalId) {
     const shapesByType = this.getShapesByType(animalId);
     const required = {};
-    
+
     Object.keys(shapesByType).forEach(type => {
         required[type] = shapesByType[type].length;
     });
-    
+
     return required;
 };
 
 // Make available globally
 window.AnimalData = AnimalData;
 
-console.log('🦋 AnimalData loaded - 8 animals with complete definitions ready');
-
-
-
-
-
-
-
-
-
-
-
-
-// Utility functions for working with animal data
-AnimalData.getAllAnimals = function() {
-    return Object.keys(this).filter(key => typeof this[key] === 'object' && this[key].name);
-};
-
-AnimalData.getAnimal = function(animalId) {
-    return this[animalId] || null;
-};
-
-AnimalData.getShapesByType = function(animalId) {
-    const animal = this.getAnimal(animalId);
-    if (!animal) return {};
-    
-    const shapesByType = {};
-    animal.shapes.forEach(shape => {
-        if (!shapesByType[shape.type]) {
-            shapesByType[shape.type] = [];
-        }
-        shapesByType[shape.type].push(shape);
-    });
-    
-    return shapesByType;
-};
-
-AnimalData.getRequiredShapes = function(animalId) {
-    const shapesByType = this.getShapesByType(animalId);
-    const required = {};
-    
-    Object.keys(shapesByType).forEach(type => {
-        required[type] = shapesByType[type].length;
-    });
-    
-    return required;
-};
-
-// Make available globally
-window.AnimalData = AnimalData;
-
-console.log('🦋 AnimalData loaded - Animal definitions ready');
+console.log('🦋 AnimalData loaded - 10 animals with complete definitions ready');

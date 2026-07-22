@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-fullscreen">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <title>Talking Panda</title>
+    
+    <!-- Global Scripts -->
+    <script src="../../js/global.js"></script>
+    <script src="../../js/audio-system.js"></script>
+    
+    <!-- Game Scripts -->
+    <script src="panda-animator.js"></script>
+    <script src="voice-recorder.js"></script>
+    <script src="game.js"></script>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../../styles/global.css">
+    <link rel="stylesheet" href="game.css">
+</head>
+<body>
+    <!-- Main Game Container -->
+    <div class="game-container">
+        
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <button id="homeBtn" class="btn-icon">🏠</button>
+            
+            <div class="title">
+                <h1>Talking Panda</h1>
+            </div>
+            
+            <button id="micBtn" class="btn-icon mic-btn">
+                🎤
+            </button>
+        </div>
+        
+        <!-- Panda Display Area -->
+        <div class="panda-area">
+            <canvas id="pandaCanvas"></canvas>
+            
+            <!-- Recording Indicator -->
+            <div id="recordingIndicator" class="recording-indicator hidden">
+                <span class="recording-dot"></span>
+                <span class="recording-text">Recording...</span>
+            </div>
+            
+            <!-- Playing Indicator -->
+            <div id="playingIndicator" class="playing-indicator hidden">
+                <span class="playing-icon">🔊</span>
+                <span class="playing-text">Playing...</span>
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button id="feedBtn" class="action-btn">
+                <span class="btn-emoji">🍎</span>
+                <span class="btn-label">Feed</span>
+            </button>
+            
+            <button id="petBtn" class="action-btn">
+                <span class="btn-emoji">👋</span>
+                <span class="btn-label">Pet</span>
+            </button>
+            
+            <button id="sleepBtn" class="action-btn">
+                <span class="btn-emoji">💤</span>
+                <span class="btn-label">Sleep</span>
+            </button>
+            
+            <button id="pokeBtn" class="action-btn">
+                <span class="btn-emoji">👊</span>
+                <span class="btn-label">Poke</span>
+            </button>
+        </div>
+        
+    </div>
+    
+    <!-- Permission Modal for Microphone -->
+    <div id="micPermissionModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>🎤 Microphone Access</h2>
+            <p>Let the panda hear your voice!</p>
+            <button id="allowMicBtn" class="btn btn-primary btn-large">
+                Allow Microphone
+            </button>
+            <button id="denyMicBtn" class="btn btn-secondary">
+                Maybe Later
+            </button>
+        </div>
+    </div>
+    
+</body>
+</html>

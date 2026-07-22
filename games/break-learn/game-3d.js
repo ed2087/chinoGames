@@ -11,10 +11,15 @@ class BreakLearnGame3D {
         
         // Game state
         this.currentObject = null;
-        this.currentMaterial = 'wood';
+        this.currentMaterial = 'pokeball';
         this.fragments = [];
         this.isDestroying = false;
         this.hitCount = 0;
+
+        // The Pokemon inside the current ball is fetched as soon as the
+        // ball spawns, so it's ready the instant the ball cracks open.
+        this.pendingPokemonPromise = null;
+        this.activeReveals = [];
         
         // Raycasting for mouse interaction updateCameraFollow
         this.raycaster = new THREE.Raycaster();
@@ -44,25 +49,61 @@ class BreakLearnGame3D {
         
         // Start game loop
         this.startGameLoop();
-        
-        // Audio welcome
-        document.addEventListener('audioEnabled', () => {
-            setTimeout(() => {
-                if (window.audioSystem?.isInitialized) {
-                    window.audioSystem.speak("Welcome to Break and Learn 3D! Tap objects to destroy them!");
-                }
-            }, 1000);
-        });
-        
+
         console.log('🎮 Break & Learn 3D initialized!');
     }
     
 setupScene() {
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x1a1a2e); // Back to dark
-    
-    // Add fog for depth
-    this.scene.fog = new THREE.Fog(0x1a1a2e, 10, 50);
+    this.scene.background = new THREE.Color(0x8ED1FC); // Open sky
+
+    // Fog matches the sky so the grass field fades naturally at the horizon
+    this.scene.fog = new THREE.Fog(0x8ED1FC, 20, 65);
+
+    this.createGroundMesh();
+}
+
+createGroundMesh() {
+    const groundGeometry = new THREE.PlaneGeometry(90, 90);
+    const groundMaterial = new THREE.MeshStandardMaterial({
+        map: this.createGrassTexture(),
+        roughness: 0.95,
+        metalness: 0
+    });
+
+    const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+    ground.rotation.x = -Math.PI / 2;
+    ground.position.y = -5; // matches the invisible physics ground plane
+    ground.receiveShadow = true;
+    this.scene.add(ground);
+}
+
+createGrassTexture() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 256;
+    canvas.height = 256;
+    const ctx = canvas.getContext('2d');
+
+    ctx.fillStyle = '#5FA83B';
+    ctx.fillRect(0, 0, 256, 256);
+
+    // Scatter short blade-like strokes for a natural, textured field look
+    for (let i = 0; i < 900; i++) {
+        const x = Math.random() * 256;
+        const y = Math.random() * 256;
+        ctx.strokeStyle = Math.random() > 0.5 ? '#4C8A2C' : '#72C24E';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + (Math.random() - 0.5) * 4, y - 4 - Math.random() * 4);
+        ctx.stroke();
+    }
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(18, 18);
+    return texture;
 }
 
     
@@ -98,12 +139,12 @@ setupScene() {
     }
     
 setupLighting() {
-    // Bright ambient light for backrooms feel updateCameraFollow
-    const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.6);
+    // Soft sky-tinted ambient light for an outdoor field feel
+    const ambientLight = new THREE.AmbientLight(0xE8F4FF, 0.65);
     this.scene.add(ambientLight);
-    
-    // Main directional light (like fluorescent lighting)
-    const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 1.2);
+
+    // Main directional light - warm like sunlight
+    const directionalLight = new THREE.DirectionalLight(0xFFF4D6, 1.2);
     directionalLight.position.set(10, 15, 5);
     directionalLight.castShadow = true;
     directionalLight.shadow.mapSize.width = 2048;
@@ -226,7 +267,47 @@ setupLighting() {
         } else {
             // Show damage effect
             this.showDamageEffect();
+            this.playHitBounceAnimation(this.currentObject.mesh);
         }
+    }
+
+    // Squash-and-stretch "boop" reaction played on every hit that doesn't
+    // break the ball. Only touches mesh.scale, so it never fights with the
+    // physics-driven position/rotation sync in syncPhysicsBodies().
+    playHitBounceAnimation(mesh) {
+        if (!mesh) return;
+
+        const duration = 320;
+        const startTime = performance.now();
+        const squashX = 1.35, squashY = 0.65, squashZ = 1.35;
+
+        const easeOutElastic = (t) => {
+            const c4 = (2 * Math.PI) / 3;
+            return t <= 0 ? 0 : t >= 1 ? 1 : Math.pow(2, -8 * t) * Math.sin((t * 8 - 0.75) * c4) + 1;
+        };
+
+        const animate = () => {
+            // Bail out if this ball has since been destroyed or swapped
+            if (!this.currentObject || this.currentObject.mesh !== mesh) return;
+
+            const elapsed = performance.now() - startTime;
+            const t = Math.min(1, elapsed / duration);
+            const ease = easeOutElastic(t);
+
+            mesh.scale.set(
+                squashX + (1 - squashX) * ease,
+                squashY + (1 - squashY) * ease,
+                squashZ + (1 - squashZ) * ease
+            );
+
+            if (t < 1) {
+                requestAnimationFrame(animate);
+            } else {
+                mesh.scale.set(1, 1, 1);
+            }
+        };
+
+        animate();
     }
     
     createImpactEffect(impactPoint) {
@@ -240,102 +321,31 @@ setupLighting() {
     playHitSound() {
         // Use the existing audio system methods
         if (window.audioSystem?.isInitialized) {
-            switch (this.currentMaterial) {
-                case 'wood':
-                    this.generateWoodSound();
-                    break;
-                case 'glass':
-                    this.generateGlassSound();
-                    break;
-                case 'ice':
-                    this.generateIceSound();
-                    break;
-                case 'metal':
-                    this.generateMetalSound();
-                    break;
-            }
+            this.generatePokeballSound();
         }
     }
-    
-    // Copy sound generation methods from original game
-    generateWoodSound() {
+
+    generatePokeballSound() {
         if (!window.audioSystem?.audioContext) return;
-        
+
         const audioContext = window.audioSystem.audioContext;
         const oscillator = audioContext.createOscillator();
         const gainNode = audioContext.createGain();
-        
+
         oscillator.connect(gainNode);
         gainNode.connect(audioContext.destination);
-        
-        oscillator.frequency.setValueAtTime(150, audioContext.currentTime);
-        oscillator.frequency.exponentialRampToValueAtTime(50, audioContext.currentTime + 0.1);
-        
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-        
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.2);
-    }
-    
-    generateGlassSound() {
-        if (!window.audioSystem?.audioContext) return;
-        
-        const audioContext = window.audioSystem.audioContext;
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-        oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.3);
-        
-        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-        
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.3);
-    }
-    
-    generateIceSound() {
-        if (!window.audioSystem?.audioContext) return;
-        
-        const audioContext = window.audioSystem.audioContext;
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
-        oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.4);
-        
+
+        // A springy plastic "boink" rather than a break sound
+        oscillator.type = 'triangle';
+        oscillator.frequency.setValueAtTime(500, audioContext.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(700, audioContext.currentTime + 0.06);
+        oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.15);
+
         gainNode.gain.setValueAtTime(0.25, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
-        
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+
         oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.4);
-    }
-    
-    generateMetalSound() {
-        if (!window.audioSystem?.audioContext) return;
-        
-        const audioContext = window.audioSystem.audioContext;
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
-        oscillator.frequency.exponentialRampToValueAtTime(150, audioContext.currentTime + 0.5);
-        
-        gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-        
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.5);
+        oscillator.stop(audioContext.currentTime + 0.15);
     }
     
     showDamageEffect() {
@@ -354,38 +364,189 @@ setupLighting() {
     
     destroyObject(impactPoint) {
         if (!this.currentObject) return;
-        
+
         this.isDestroying = true;
-        
+
         // Create massive explosion effect
         this.particleSystem.createExplosion(impactPoint, this.currentMaterial, 2.0);
-        
+
         // Create fragments
         const fragments = this.objectFactory.createFragments(this.currentObject, impactPoint, 12);
         this.fragments.push(...fragments);
-        
+
         // Screen shake
         this.addScreenShake(8);
-        
+
         // Play destruction sound
         this.playDestructionSound();
-        
-        // Announce destruction
-        this.announceDestruction();
-        
+
+        // Pop out the Pokemon that was inside
+        this.revealPokemon(impactPoint);
+
         // Remove original object
         this.scene.remove(this.currentObject.mesh);
         this.physicsManager.removeBody(this.currentObject.body);
         this.currentObject = null;
-        
-        // Clean up fragments after delay
+
+        // Clean up fragments after delay - long enough that the Pokemon
+        // reveal (sprite + cry + full name/type sentence) always finishes
+        // before the next ball shows up and its announcement cuts it off.
         setTimeout(() => {
             this.cleanupFragments();
             this.createNewObject();
             this.isDestroying = false;
-        }, 3000);
+        }, 5800);
     }
-    
+
+    // Loads the Pokemon that was pre-fetched when this ball spawned, and
+    // pops it into the scene as a billboard sprite (always faces the
+    // camera) with a little bounce-in animation.
+    async revealPokemon(position) {
+        let pokemon = null;
+        try {
+            pokemon = await this.pendingPokemonPromise;
+        } catch (err) {
+            console.warn('Pokemon reveal failed:', err);
+        }
+
+        if (!pokemon) {
+            if (window.audioSystem?.isInitialized) {
+                setTimeout(() => window.audioSystem.speak('The Poke Ball popped open!'), 300);
+            }
+            return;
+        }
+
+        const loader = new THREE.TextureLoader();
+        loader.setCrossOrigin('anonymous');
+        loader.load(pokemon.spriteUrl, (texture) => {
+            const spriteMaterial = new THREE.SpriteMaterial({ map: texture, transparent: true });
+            const sprite = new THREE.Sprite(spriteMaterial);
+            sprite.position.set(position.x, position.y + 1, position.z);
+            sprite.scale.set(0.01, 0.01, 0.01);
+            this.scene.add(sprite);
+            this.activeReveals.push(sprite);
+
+            // The actual Pokemon cry, right as it pops into view
+            this.playPokemonCry(pokemon.cryUrl);
+
+            // Master Ball catches are shiny - give them a holographic sparkle
+            if (pokemon.shiny) {
+                this.playHolographicSparkle(position);
+            }
+
+            const targetScale = 5.2;
+            const startTime = performance.now();
+            const duration = 700;
+
+            const easeOutBack = (t) => {
+                const c1 = 1.70158;
+                const c3 = c1 + 1;
+                return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+            };
+
+            const bounce = () => {
+                const elapsed = performance.now() - startTime;
+                const t = Math.min(1, elapsed / duration);
+                const scale = Math.max(0, targetScale * easeOutBack(t));
+                sprite.scale.set(scale, scale, scale);
+                sprite.position.y = position.y + 1 + Math.sin(t * Math.PI) * 1.0;
+
+                if (t < 1) {
+                    requestAnimationFrame(bounce);
+                }
+            };
+            bounce();
+
+            // Hold the Pokemon on screen long enough to actually look at it
+            // and hear the full announcement, then fade out
+            setTimeout(() => {
+                const fadeStart = performance.now();
+                const fadeDuration = 800;
+                const fade = () => {
+                    const elapsed = performance.now() - fadeStart;
+                    const t = Math.min(1, elapsed / fadeDuration);
+                    spriteMaterial.opacity = 1 - t;
+                    if (t < 1) {
+                        requestAnimationFrame(fade);
+                    } else {
+                        this.scene.remove(sprite);
+                        this.activeReveals = this.activeReveals.filter(s => s !== sprite);
+                    }
+                };
+                fade();
+            }, 4700);
+        });
+
+        if (window.audioSystem?.isInitialized) {
+            const name = pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1);
+            const typeText = pokemon.types && pokemon.types.length
+                ? ` It's a ${pokemon.types.join(' and ')} type!`
+                : '';
+            // Wait a beat so the cry gets to play out before the voice speaks
+            setTimeout(() => {
+                window.audioSystem.speak(`It's ${name}! ${typeText}`);
+            }, 900);
+        }
+    }
+
+    playPokemonCry(cryUrl) {
+        if (!cryUrl) return;
+        try {
+            const audio = new Audio(cryUrl);
+            audio.volume = 0.8;
+            audio.play().catch(err => console.warn('Pokemon cry playback blocked:', err));
+        } catch (err) {
+            console.warn('Pokemon cry failed:', err);
+        }
+    }
+
+    // Master Ball catches come out shiny - twinkling rainbow bursts around
+    // the reveal give it a "holographic card" feel.
+    playHolographicSparkle(position) {
+        const emitBurst = () => {
+            for (let i = 0; i < 14; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const radius = 1.5 + Math.random() * 1.8;
+                this.particleSystem.emitParticle({
+                    position: new THREE.Vector3(
+                        position.x + Math.cos(angle) * radius,
+                        position.y + 1 + (Math.random() - 0.2) * 2.5,
+                        position.z + Math.sin(angle) * radius
+                    ),
+                    velocity: new THREE.Vector3(
+                        (Math.random() - 0.5) * 2,
+                        Math.random() * 2 + 1,
+                        (Math.random() - 0.5) * 2
+                    ),
+                    color: this.rainbowColor(Math.random()),
+                    size: 3 + Math.random() * 3,
+                    lifetime: 1.4 + Math.random()
+                });
+            }
+        };
+
+        emitBurst();
+        let bursts = 1;
+        const interval = setInterval(() => {
+            emitBurst();
+            bursts++;
+            if (bursts >= 5) clearInterval(interval);
+        }, 500);
+    }
+
+    rainbowColor(hue) {
+        const i = Math.floor(hue * 6);
+        const f = hue * 6 - i;
+        switch (i % 6) {
+            case 0: return [1, f, 0];
+            case 1: return [1 - f, 1, 0];
+            case 2: return [0, 1, f];
+            case 3: return [0, 1 - f, 1];
+            case 4: return [f, 0, 1];
+            default: return [1, 0, 1 - f];
+        }
+    }
+
     cleanupFragments() {
         this.fragments.forEach(fragment => {
             this.scene.remove(fragment.mesh);
@@ -423,66 +584,34 @@ setupLighting() {
         }
     }
     
-    announceDestruction() {
-        if (window.audioSystem?.isInitialized) {
-            const material = this.currentMaterial;
-            const objectName = this.getCurrentObjectName();
-            const phrases = [
-                `${objectName} destroyed!`,
-                `The ${material} ${objectName} is broken!`,
-                `Smashed the ${objectName}!`,
-                `Great job breaking it!`
-            ];
-            
-            const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-            setTimeout(() => {
-                window.audioSystem.speak(phrase);
-            }, 500);
-        }
-    }
-    
-    getCurrentObjectName() {
-        if (this.currentObject) {
-            return this.currentObject.name;
-        }
-        return 'object';
-    }
-    
     createNewObject() {
         // Clean up existing object
         if (this.currentObject) {
             this.scene.remove(this.currentObject.mesh);
             this.physicsManager.removeBody(this.currentObject.body);
         }
-        
+
         this.cleanupFragments();
         this.hitCount = 0;
-        
-        // Select random object type
-        const types = ['cube', 'sphere', 'cylinder'];
-        const numbers = ['1', '2', '3', '4', '5'];
-        
-        const useNumber = Math.random() > 0.5;
-        
-        if (useNumber) {
-            const number = numbers[Math.floor(Math.random() * numbers.length)];
-            this.currentObject = this.objectFactory.createNumberObject(number, this.currentMaterial, 5.0);
-        } else {
-            const shape = types[Math.floor(Math.random() * types.length)];
-            this.currentObject = this.objectFactory.createShape(shape, this.currentMaterial, 5.0);
-        }
-        
-        // Update UI
+
+        // Always a Poke Ball now - no more cubes/numbers/letters
+        this.currentObject = this.objectFactory.createPokeball(this.currentMaterial, 4.6);
+
+        // Start fetching the Pokemon inside right away, so it's ready
+        // the instant the ball cracks open. Each ball type draws from its
+        // own tier: Poke Ball = common, Great Ball = starters/favorites,
+        // Ultra Ball = strong evolved Pokemon, Master Ball = legendary.
+        this.pendingPokemonPromise = PokemonSource.fetchRandomForTier(this.currentMaterial).catch(err => {
+            console.warn('Pokemon prefetch failed:', err);
+            return null;
+        });
+
+        // Update UI text only - no voice line here, it got repetitive
+        // every single round. The Pokemon reveal announcement is the
+        // moment worth speaking out loud.
         const materialProps = this.materialManager.getMaterialProperties(this.currentMaterial);
-        document.getElementById('objectLabel').textContent = 
-            `Break the ${this.currentMaterial} ${this.currentObject.name}! (${this.currentObject.hitPoints}/${materialProps.hitPoints})`;
-        
-        // Announce new object
-        if (window.audioSystem?.isInitialized) {
-            setTimeout(() => {
-                window.audioSystem.speak(`Break the ${this.currentMaterial} ${this.currentObject.name}!`);
-            }, 300);
-        }
+        document.getElementById('objectLabel').textContent =
+            `Crack open the ${materialProps.label}! (${this.currentObject.hitPoints}/${materialProps.hitPoints} hits left)`;
     }
     
     handleResize() {
@@ -580,10 +709,11 @@ updateCameraFollow() {
     
     updateUI() {
         if (this.currentObject && !this.isDestroying) {
+            const materialProps = this.materialManager.getMaterialProperties(this.currentMaterial);
             const remaining = this.currentObject.hitPoints;
             const max = this.currentObject.maxHitPoints;
-            document.getElementById('objectLabel').textContent = 
-                `Break the ${this.currentMaterial} ${this.currentObject.name}! (${remaining}/${max} hits left)`;
+            document.getElementById('objectLabel').textContent =
+                `Crack open the ${materialProps.label}! (${remaining}/${max} hits left)`;
         }
     }
 }

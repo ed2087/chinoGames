@@ -30,10 +30,11 @@ constructor(canvas) {
     this.supportsPressure = false;
     this.currentPressure = 0.5;
     
-    // Free-form drawing - no path validation needed
+    // Path must start at the animal, avoid rocks, and reach the destination
     this.obstacles = [];
     this.startPoint = null;
     this.endPoint = null;
+    this.hitObstacle = false;
     
     this.setupEventListeners();
     this.detectPressureSupport();
@@ -116,12 +117,13 @@ setupEventListeners() {
         const rect = this.gameCanvas.getBoundingClientRect(); // Changed from this.canvas
         const x = clientX - rect.left;
         const y = clientY - rect.top;
-        
+
         console.log('Drawing started:', { x, y, pressure, pointerType });
-        
+
         this.isDrawing = true;
         this.currentPath = [];
         this.currentPressure = pressure;
+        this.hitObstacle = false;
         
         // Add first point
         this.addPathPoint(x, y, pressure);
@@ -151,21 +153,27 @@ setupEventListeners() {
     
     stopDrawing() {
         if (!this.isDrawing) return;
-        
+
         this.isDrawing = false;
-        
-        // Check if path is valid (reaches destination)
+
+        // Check if path is valid (starts at the animal, avoids rocks, reaches destination)
         const pathComplete = this.validatePathComplete();
-        
+
         if (pathComplete) {
             this.drawnPaths.push([...this.currentPath]);
             this.onPathCompleted && this.onPathCompleted(this.currentPath);
+        } else if (this.hitObstacle) {
+            // Crossed a rock - this attempt doesn't count, wipe it so the next try starts clean
+            this.onObstacleBlocked && this.onObstacleBlocked();
+            setTimeout(() => this.clearCanvas(), 400);
         } else if (this.currentPath.length >= this.minPathLength) {
-            // Path drawn but doesn't reach destination
+            // Path drawn but doesn't start at the animal or doesn't reach the destination
             this.onPathIncomplete && this.onPathIncomplete(this.currentPath);
+            setTimeout(() => this.clearCanvas(), 600);
         }
-        
+
         this.currentPath = [];
+        this.hitObstacle = false;
     }
     
     addPathPoint(x, y, pressure) {
@@ -276,8 +284,15 @@ setupEventListeners() {
     }
     
     validatePathComplete() {
-        if (!this.endPoint || this.currentPath.length < this.minPathLength) return false;
-        
+        if (!this.startPoint || !this.endPoint || this.currentPath.length < this.minPathLength) return false;
+
+        // Crossing a rock invalidates the whole attempt - no free passes
+        if (this.hitObstacle) return false;
+
+        // Must actually start from the animal, not from a scribble drawn anywhere
+        const startTolerance = Math.max(90, this.gameCanvas.clientWidth * 0.09);
+        if (this.distance(this.currentPath[0], this.startPoint) > startTolerance) return false;
+
         // Check if path gets close enough to destination
         const endTolerance = Math.max(80, this.gameCanvas.clientWidth * 0.08); // 8% of screen width
 
@@ -288,11 +303,12 @@ setupEventListeners() {
         }
         return false;
     }
-    
+
     checkObstacleCollision(x, y) {
         for (const obstacle of this.obstacles) {
             if (this.distance({ x, y }, obstacle) <= obstacle.radius) {
-                // Hit obstacle - provide feedback
+                // Hit obstacle - this stroke is now disqualified, not just a warning
+                this.hitObstacle = true;
                 this.onObstacleHit && this.onObstacleHit(obstacle);
                 this.drawObstacleHitEffect(obstacle.x, obstacle.y);
                 return true;
@@ -325,4 +341,5 @@ this.ctx.clearRect(0, 0, this.drawingCanvas.width, this.drawingCanvas.height);  
     onPathCompleted = null;
     onPathIncomplete = null;
     onObstacleHit = null;
+    onObstacleBlocked = null;
 }
